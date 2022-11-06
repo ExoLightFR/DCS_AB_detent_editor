@@ -67,16 +67,24 @@ static std::vector< std::shared_ptr<AModule> >  _get_modules_vector(std::string 
     return modules;
 }
 
+// Returns first module in vector with is installed. If none are installed, return first element of vector.
+inline std::shared_ptr<AModule> _get_first_installed_module(std::vector< std::shared_ptr<AModule> > const& modules)
+{
+    auto first_installed_module = std::find_if(modules.begin(), modules.end(),
+        [](std::shared_ptr<AModule> const& x) { return x->is_installed(); });
+    return (first_installed_module == modules.end() ? modules[0] : *first_installed_module);
+}
+
 static std::shared_ptr<AModule> _selected_module_Combo(std::string const& DCS_path)
 {
     static auto modules = _get_modules_vector(DCS_path);
-    static std::shared_ptr<AModule> selected = modules[0];
+    static std::shared_ptr<AModule> selected = _get_first_installed_module(modules);
     static std::string old_DCS_path = DCS_path;
 
     if (old_DCS_path != DCS_path)   // DCS path changed by user, update modules
     {
         modules = _get_modules_vector(DCS_path);
-        selected = modules[0];
+        selected = _get_first_installed_module(modules);
         old_DCS_path = DCS_path;
     }
 
