@@ -17,7 +17,7 @@ int display_joysticks_Combo()
     {
         for (int i = 0; i < numjoysticks; ++i)
         {
-            if (ImGui::Selectable(SDL_JoystickNameForIndex(i)))
+            if (ImGui::Selectable(SDL_JoystickNameForIndex(i), selected == i))
                 selected = i;
             if (selected == i)
                 ImGui::SetItemDefaultFocus();
@@ -42,7 +42,7 @@ int display_joystick_axies_Combo(SDL_Joystick *stick)
     {
         for (int i = 0; i < num_axies && i < ARRAY_LEN(axis_names); ++i)
         {
-            if (ImGui::Selectable(axis_names[i]))
+            if (ImGui::Selectable(axis_names[i], selected == i))
                 selected = i;
             if (selected == i)
                 ImGui::SetItemDefaultFocus();

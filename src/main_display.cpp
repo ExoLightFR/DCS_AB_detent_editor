@@ -106,8 +106,10 @@ static std::shared_ptr<AModule> _selected_module_Combo(std::string const& DCS_pa
             }
             else
             {
-                if (ImGui::Selectable(i->name().c_str()))
+                if (ImGui::Selectable(i->name().c_str(), selected == i))
                     selected = i;
+                if (selected == i)
+                    ImGui::SetItemDefaultFocus();
             }
         }
         ImGui::EndCombo();
