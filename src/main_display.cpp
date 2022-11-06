@@ -132,6 +132,30 @@ static std::string _try_get_DCS_path()
     return "";
 }
 
+static void _DCS_path_line(std::string &DCS_mbs_path)
+{
+    size_t  converted;
+    WCHAR   widechar_buffer[MAX_PATH + 1];
+    bool    dir_exists = false;
+
+    mbstowcs_s(&converted, widechar_buffer, MAX_PATH + 1, DCS_mbs_path.c_str(), MAX_PATH);
+    DWORD attribs = GetFileAttributesW(widechar_buffer);
+    if (attribs != INVALID_FILE_ATTRIBUTES)
+        dir_exists = attribs & FILE_ATTRIBUTE_DIRECTORY;
+
+    if (!dir_exists)
+        ImGui::PushStyleColor(ImGuiCol_Text, {0.9f, 0.0f, 0.0f, 1.0f});
+    ImGui::InputTextWithHint("DCS installation path",
+        "i.e. C:\\Program Files\\Eagle Dynamics\\DCS World",
+        &DCS_mbs_path);
+    if (!dir_exists)
+    {
+        ImGui::PopStyleColor();
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Directory doesn't exist");
+    }
+}
+
 void    render_main_window(ImGuiIO &io, bool &show_demo_window, SDL_Joystick **sdl_stick)
 {
     static float            throttle = 0.0f;
@@ -152,9 +176,7 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window, SDL_Joystick **s
 
     ImGui::Begin("main", nullptr, flags);
 
-    ImGui::InputTextWithHint("DCS installation path",
-        "i.e. C:\\Program Files\\Eagle Dynamics\\DCS World",
-        &DCS_mbs_path);
+    _DCS_path_line(DCS_mbs_path);
 
     std::shared_ptr<AModule> module = _selected_module_Combo(DCS_mbs_path);
 
@@ -173,7 +195,7 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window, SDL_Joystick **s
     ImGui::Separator();
 
     _throttle_line(throttle, AB_colour, &invert, module);
-
+#ifndef NDEBUG
     ImGui::Separator();
 
     if (ImGui::CollapsingHeader("Dev options"))
@@ -183,6 +205,6 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window, SDL_Joystick **s
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     }
-
+#endif
     ImGui::End();
 }

@@ -49,6 +49,7 @@ int main(int, char**)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
+	io.IniFilename = NULL;
 
 	ImGui::StyleColorsDark();
 
