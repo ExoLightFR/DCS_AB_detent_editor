@@ -27,7 +27,8 @@ static float   _normalize_axis_pos(Sint16 axis_pos)
 }
 
 // Render throttle progress bar, Set AB button, and invert checkbox
-static void _throttle_line(float throttle, ImVec4 AB_colour, bool *invert, std::shared_ptr<AModule> module)
+static void _throttle_line(float throttle, ImVec4 AB_colour, bool *invert, std::shared_ptr<AModule> module,
+    bool enable_AB_button)
 {
     if (throttle > module->get_detent())    // Colour bar green if in AB
         ImGui::PushStyleColor(ImGuiCol_PlotHistogram, AB_colour);
@@ -38,7 +39,7 @@ static void _throttle_line(float throttle, ImVec4 AB_colour, bool *invert, std::
 
     ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 
-    if (!module->is_installed())
+    if (!enable_AB_button)
         ImGui::BeginDisabled();
     if (ImGui::Button("Set AB detent"))
     {
@@ -46,78 +47,12 @@ static void _throttle_line(float throttle, ImVec4 AB_colour, bool *invert, std::
         module->set_detent(throttle);
         std::clog << "New detend set at " << throttle << std::endl;
     }
-    if (!module->is_installed())
+    if (!enable_AB_button)
         ImGui::EndDisabled();
 
     ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 
     ImGui::Checkbox("Invert", invert);
-}
-
-// Returns a vector of shared_ptr<AModule>, which contains all of the supported modules by the software.
-// AModule is derived by classes of specific modules, see AModule.h
-static std::vector< std::shared_ptr<AModule> >  _get_modules_vector(std::string const &DCS_path)
-{
-    std::vector< std::shared_ptr<AModule> >    modules;
-    for (auto i : AModule::supported_modules)
-    {
-        modules.push_back(AModule::getModule(DCS_path, i));
-    }
-    modules.shrink_to_fit();
-    return modules;
-}
-
-// Returns first module in vector with is installed. If none are installed, return first element of vector.
-inline std::shared_ptr<AModule> _get_first_installed_module(std::vector< std::shared_ptr<AModule> > const& modules)
-{
-    auto first_installed_module = std::find_if(modules.begin(), modules.end(),
-        [](std::shared_ptr<AModule> const& x) { return x->is_installed(); });
-    return (first_installed_module == modules.end() ? modules[0] : *first_installed_module);
-}
-
-static std::shared_ptr<AModule> _selected_module_Combo(std::string const& DCS_path)
-{
-    static auto modules = _get_modules_vector(DCS_path);
-    static std::shared_ptr<AModule> selected = _get_first_installed_module(modules);
-    static std::string old_DCS_path = DCS_path;
-
-    if (old_DCS_path != DCS_path)   // DCS path changed by user, update modules
-    {
-        modules = _get_modules_vector(DCS_path);
-        selected = _get_first_installed_module(modules);
-        old_DCS_path = DCS_path;
-    }
-
-    // If cannot find any module with is_installed() == true
-    const bool no_modules = std::find_if(modules.begin(), modules.end(),
-        [](std::shared_ptr<AModule> &x) { return x->is_installed(); } ) == modules.end();
-
-    if (no_modules)
-        ImGui::BeginDisabled();
-    if (ImGui::BeginCombo("Module", selected->name().c_str()))
-    {
-        for (auto &i : modules)
-        {
-            if (!i->is_installed())
-            {
-                ImGui::BeginDisabled();
-                ImGui::Selectable(i->name().c_str());
-                ImGui::EndDisabled();
-            }
-            else
-            {
-                if (ImGui::Selectable(i->name().c_str(), selected == i))
-                    selected = i;
-                if (selected == i)
-                    ImGui::SetItemDefaultFocus();
-            }
-        }
-        ImGui::EndCombo();
-    }
-    if (no_modules)
-        ImGui::EndDisabled();
-
-    return selected;
 }
 
 // Tries to get different Windows Registry entries to find a DCS install path
@@ -188,7 +123,7 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window, SDL_Joystick **s
 
     _DCS_path_line(DCS_mbs_path);
 
-    std::shared_ptr<AModule> module = _selected_module_Combo(DCS_mbs_path);
+    std::shared_ptr<AModule> module = selected_module_Combo(DCS_mbs_path);
 
     int old_index_stick = index_stick;
     index_stick = display_joysticks_Combo();
@@ -198,13 +133,20 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window, SDL_Joystick **s
         *sdl_stick = SDL_JoystickOpen(index_stick);
     }
     index_axis = display_joystick_axies_Combo(*sdl_stick);
-    throttle = _normalize_axis_pos(SDL_JoystickGetAxis(*sdl_stick, index_axis));
-    if (invert)
-        throttle = 1.0f - throttle;
+
+    if (*sdl_stick == NULL)
+        throttle = 0.0f;
+    else
+    {
+        throttle = _normalize_axis_pos(SDL_JoystickGetAxis(*sdl_stick, index_axis));
+        if (invert)
+            throttle = 1.0f - throttle;
+    }
 
     ImGui::Separator();
 
-    _throttle_line(throttle, AB_colour, &invert, module);
+    _throttle_line(throttle, AB_colour, &invert, module,
+        module->is_installed() && index_axis != -1);
 #ifndef NDEBUG
     ImGui::Separator();
 

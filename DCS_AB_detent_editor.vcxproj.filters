@@ -20,7 +20,7 @@
     <ClCompile Include="src\gui_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\joystick_list.cpp">
+    <ClCompile Include="src\Combo_selections.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
