@@ -3,6 +3,15 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Some of my own misc files
+build.bat
+# !SDL2/
+# !SDL2/lib/
+# !SDL2/lib/x64/
+# !SDL2/lib/x86/
+# !SDL2/lib/x64/*
+# !SDL2/lib/x86/*
+
 # User-specific files
 *.rsuser
 *.suo
@@ -21,8 +30,8 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-x64/
-x86/
+/x64/
+/x86/
 [Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/

@@ -131,6 +131,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2\lib\x64\SDL2.lib;SDL2\lib\x64\SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>if not exist "$(SolutionDir)bin" mkdir $(SolutionDir)bin;
+copy /y $(SolutionDir)$(Platform)\$(Configuration)\$(TargetName).exe $(SolutionDir)bin\$(TargetName).exe;
+copy /y $(SolutionDir)SDL2\lib\x64\SDL2.dll $(SolutionDir)bin\SDL2.dll;
+powershell Compress-Archive $(SolutionDir)bin\* $(SolutionDir)$(TargetName).zip;
+move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp" />
