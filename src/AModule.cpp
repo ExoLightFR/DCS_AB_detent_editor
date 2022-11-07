@@ -1,9 +1,12 @@
 #include "AModule.h"
 
-const std::array<const char *, 3> AModule::supported_modules = {
+const std::array<const char *, AModule::NUM_SUPPORTED_MODULES> AModule::supported_modules = {
     "M-2000C",
     "Mirage-F1",
-    "DEBUG: This module doesn't exist" };
+#ifdef _DEBUG
+    "DEBUG: This module doesn't exist"
+#endif
+};
 
 std::shared_ptr<AModule>    AModule::getModule(std::string const& DCS_path, std::string const &module_name)
 {
@@ -234,18 +237,22 @@ auto Module_MirageF1::_get_detent_from_file(std::string &file_content) const -> 
 }
 
 
+#ifdef _DEBUG
+# define MODULE_NOTFOUND_DISPLAYNAME    "DEBUG: Module_NotFound instance"
+#else
+# define MODULE_NOTFOUND_DISPLAYNAME    "ERROR"
+#endif
 
-Module_NotFound::Module_NotFound() : AModule("DEBUG: Module not found")
+Module_NotFound::Module_NotFound() : AModule(MODULE_NOTFOUND_DISPLAYNAME)
 {
 }
 
-int Module_NotFound::set_detent(float pos)
+int Module_NotFound::set_detent(float)
 {
-    (void)pos;
-    throw std::logic_error("Tried to set detent on non-existing module");
+    throw std::logic_error("Fatal: This should never happen. Contact the dev!");
 }
 
 float Module_NotFound::get_detent() const
 {
-    throw std::logic_error("Tried to get detent on non-existing module");
+    throw std::logic_error("Fatal: This should never happen. Contact the dev!");
 }

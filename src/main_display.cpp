@@ -77,6 +77,7 @@ static std::string _try_get_DCS_path()
     return "";
 }
 
+// FIXME: Unicode support doesn't work.
 static void _DCS_path_line(std::string &DCS_mbs_path)
 {
     size_t  converted;
@@ -147,7 +148,7 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window, SDL_Joystick **s
 
     _throttle_line(throttle, AB_colour, &invert, module,
         module->is_installed() && index_axis != -1);
-#ifndef NDEBUG
+#ifdef _DEBUG
     ImGui::Separator();
 
     if (ImGui::CollapsingHeader("Dev options"))

@@ -33,8 +33,14 @@ class AModule
 	public:
 		static std::shared_ptr<AModule> getModule(std::string const& DCS_path, std::wstring const& module_name);
         static std::shared_ptr<AModule> getModule(std::string const& DCS_path, std::string const &module_name);
-        static const std::array<const char*, 3> supported_modules;
+#ifdef _DEBUG // This is ugly, but I can't get the array to decude the right size in template
+        constexpr static const int NUM_SUPPORTED_MODULES = 3;
+#else
+        constexpr static const int NUM_SUPPORTED_MODULES = 2;
+#endif
+        static const std::array<const char*, NUM_SUPPORTED_MODULES> supported_modules;
 
+    public:
         AModule(std::string name = "") : _name(name) {}
 
 		virtual int     set_detent(float pos) = 0;

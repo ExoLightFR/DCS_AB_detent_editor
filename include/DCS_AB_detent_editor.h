@@ -20,8 +20,7 @@
 #define ARRAY_LEN(x)                    sizeof(x) / sizeof(x[0])
 
 
-//auto    selected_module_Combo(std::string const &DCS_path) -> std::shared_ptr<AModule>;
-std::shared_ptr<AModule> selected_module_Combo(std::string const &DCS_path);
+auto    selected_module_Combo(std::string const &DCS_path) -> std::shared_ptr<AModule>;
 int     display_joysticks_Combo();
 int     display_joystick_axies_Combo(SDL_Joystick *stick);
 void    render_main_window(ImGuiIO &io, bool &show_demo_window, SDL_Joystick **sdl_stick);
