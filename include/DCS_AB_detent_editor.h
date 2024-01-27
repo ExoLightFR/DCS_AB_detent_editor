@@ -12,18 +12,13 @@
 #include <Windows.h>
 
 #include <imgui.h>
-#include <imgui_impl_sdl.h>
-#include <imgui_impl_sdlrenderer.h>
-#include <SDL.h>
 
 #define RGB_TO_NORMED_FLOAT(x, y, z)    x / 255.0f, y / 255.0f, z / 255.0f
 #define ARRAY_LEN(x)                    sizeof(x) / sizeof(x[0])
 
 
 auto    selected_module_Combo(std::string const &DCS_path) -> std::shared_ptr<AModule>;
-int     display_joysticks_Combo();
-int     display_joystick_axies_Combo(SDL_Joystick *stick);
-void    render_main_window(ImGuiIO &io, bool &show_demo_window, SDL_Joystick **sdl_stick);
+void    render_main_window(ImGuiIO &io, bool &show_demo_window);
 
 void    error_popup(std::string const &error_msg, bool *error_popup);
 

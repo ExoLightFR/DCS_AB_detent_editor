@@ -6,10 +6,7 @@
 #include <AModule.h>
 
 #include "imgui.h"
-#include "imgui_impl_sdl.h"
-#include "imgui_impl_sdlrenderer.h"
 #include <imgui_stdlib.h>
-#include <SDL.h>
 
 #include <windows.h>
 
@@ -19,10 +16,10 @@
 
 #include <locale>
 
-static float   _normalize_axis_pos(Sint16 axis_pos)
+static float   _normalize_axis_pos(uint16_t axis_pos)
 {
-    constexpr int   range = SDL_MAX_UINT16;
-    long test = axis_pos + (SDL_MAX_UINT16 / 2);
+    constexpr int   range = UINT16_MAX;
+    long test = axis_pos + (UINT16_MAX / 2);
     return static_cast<float>(test) / range;
 }
 
@@ -102,11 +99,10 @@ static void _DCS_path_line(std::string &DCS_mbs_path)
     }
 }
 
-void    render_main_window(ImGuiIO &io, bool &show_demo_window, SDL_Joystick **sdl_stick)
+void    render_main_window(ImGuiIO &io, bool &show_demo_window)
 {
     static float            throttle = 0.0f;
     static ImVec4           AB_colour = { RGB_TO_NORMED_FLOAT(32, 192, 32), 1.0f }; // strictly useless, just for debugging
-    static int              index_stick = 0;
     static int              index_axis = 0;
     static bool             invert = true;
     static std::string      DCS_mbs_path = _try_get_DCS_path();
@@ -126,23 +122,6 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window, SDL_Joystick **s
 
     std::shared_ptr<AModule> module = selected_module_Combo(DCS_mbs_path);
 
-    int old_index_stick = index_stick;
-    index_stick = display_joysticks_Combo();
-    if (old_index_stick != index_stick) // User changed stick selection, release and open SDL_Joystick
-    {
-        SDL_JoystickClose(*sdl_stick);
-        *sdl_stick = SDL_JoystickOpen(index_stick);
-    }
-    index_axis = display_joystick_axies_Combo(*sdl_stick);
-
-    if (*sdl_stick == NULL)
-        throttle = 0.0f;
-    else
-    {
-        throttle = _normalize_axis_pos(SDL_JoystickGetAxis(*sdl_stick, index_axis));
-        if (invert)
-            throttle = 1.0f - throttle;
-    }
 
     ImGui::Separator();
 

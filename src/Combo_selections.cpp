@@ -2,9 +2,6 @@
 #include <AModule.h>
 
 #include "imgui.h"
-#include "imgui_impl_sdl.h"
-#include "imgui_impl_sdlrenderer.h"
-#include <SDL.h>
 
 #include <memory>
 #include <vector>
@@ -76,63 +73,3 @@ std::shared_ptr<AModule> selected_module_Combo(std::string const &DCS_path)
 
     return selected;
 }
-
-
-int display_joysticks_Combo()
-{
-	static int  selected = 0;
-	const int	num_joysticks = SDL_NumJoysticks();
-	const char  *preview_name = SDL_JoystickNameForIndex(selected);
-
-    if (num_joysticks == 0)
-    {
-        preview_name = "No joystick found";
-        ImGui::BeginDisabled();
-    }
-    if (ImGui::BeginCombo("Peripheral", preview_name))
-    {
-        for (int i = 0; i < num_joysticks; ++i)
-        {
-            if (ImGui::Selectable(SDL_JoystickNameForIndex(i), selected == i))
-                selected = i;
-            if (selected == i)
-                ImGui::SetItemDefaultFocus();
-        }
-        ImGui::EndCombo();
-    }
-    if (num_joysticks == 0)
-        ImGui::EndDisabled();
-    return num_joysticks == 0 ? -1 : selected;
-}
-
-int display_joystick_axies_Combo(SDL_Joystick *stick)
-{
-    static int  selected = 0;
-    const int   num_axies = SDL_JoystickNumAxes(stick);
-    const char  *axis_names[] = {"JOY_X", "JOY_Y", "JOY_Z", "JOY_RX", "JOY_RY", "JOY_RZ", "Slider", "Slider 2"};
-    const char  *preview_name = axis_names[selected];
-
-    // Resets selected if you had selected an axis on a previous stick that doesn't exist on this stick
-    if (selected >= num_axies)
-        selected = 0;
-    if (num_axies <= 0)
-    {
-        preview_name = "No axis found";
-        ImGui::BeginDisabled();
-    }
-    if (ImGui::BeginCombo("Axis", preview_name))
-    {
-        for (int i = 0; i < num_axies && i < ARRAY_LEN(axis_names); ++i)
-        {
-            if (ImGui::Selectable(axis_names[i], selected == i))
-                selected = i;
-            if (selected == i)
-                ImGui::SetItemDefaultFocus();
-        }
-        ImGui::EndCombo();
-    }
-    if (num_axies <= 0)
-        ImGui::EndDisabled();
-    return num_axies <= 0 ? -1 : selected;
-}
-
