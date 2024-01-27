@@ -37,7 +37,18 @@ bool    AModule::is_installed() const
     return _is_installed;
 }
 
+InteropString	AModule::getSavedGamesPath() const
+{
+	WCHAR* saved_games_path;
 
+	HRESULT hr = SHGetKnownFolderPath(FOLDERID_SavedGames, 0, NULL, &saved_games_path);
+	if (hr != S_OK || saved_games_path == NULL)
+		throw std::runtime_error("Unable to get Saved Games folder path");
+
+	InteropString saved_games = std::wstring(saved_games_path);
+	CoTaskMemFree(saved_games_path);
+	return saved_games;
+}
 
 Module_M2000C::Module_M2000C(std::wstring const& DCS_ws_path) : AModule(_display_name)
 {
@@ -47,16 +58,9 @@ Module_M2000C::Module_M2000C(std::wstring const& DCS_ws_path) : AModule(_display
     if (attribs != INVALID_FILE_ATTRIBUTES)
         _is_installed = attribs & FILE_ATTRIBUTE_DIRECTORY;
 
-    WCHAR *saved_games_path;
+	InteropString options_lua = getSavedGamesPath() + L"\\DCS.openbeta\\Config\\options.lua";
 
-    HRESULT hr = SHGetKnownFolderPath(FOLDERID_SavedGames, 0, NULL, &saved_games_path);
-    if (hr != S_OK || saved_games_path == NULL)
-        throw std::runtime_error("Unable to get Saved Games folder path");
-    std::wstring    options_lua_path = saved_games_path;
-    options_lua_path += L"\\DCS.openbeta\\Config\\options.lua";
-    CoTaskMemFree(saved_games_path);
-
-    std::ifstream   options_ifs(options_lua_path.c_str());
+    std::ifstream   options_ifs(options_lua.get_wcs());
     if (!options_ifs.is_open())
         throw std::runtime_error("Couldn't open options.lua");
 
@@ -74,17 +78,10 @@ int Module_M2000C::set_detent(float pos)
         throw std::logic_error("Tried to set AB on non-existant module\n\
 You might not have this module installed");
 
-    WCHAR       *saved_games_path;
+	InteropString options_lua = getSavedGamesPath() + L"\\DCS.openbeta\\Config\\options.lua";
 
-    HRESULT hr = SHGetKnownFolderPath(FOLDERID_SavedGames, 0, NULL, &saved_games_path);
-    if (hr != S_OK || saved_games_path == NULL)
-        throw std::runtime_error("Unable to get Saved Games folder path");
-    std::wstring    options_lua_path = saved_games_path;
-    options_lua_path += L"\\DCS.openbeta\\Config\\options.lua";
-    CoTaskMemFree(saved_games_path);
-
-    std::ifstream   options_ifs(options_lua_path.c_str());
-    if (!options_ifs.is_open())
+	std::ifstream   options_ifs(options_lua.get_wcs());
+	if (!options_ifs.is_open())
         throw std::runtime_error("Couldn't open options.lua");
 
     std::stringstream   options_sstream;
@@ -94,7 +91,7 @@ You might not have this module installed");
     auto [begin_detent, end_detent] = _get_detent_from_file(file_content);
     file_content.replace(begin_detent, end_detent, std::to_string(pos * 100) + ',');
 
-    std::ofstream   options_ofs(options_lua_path.c_str(), std::ios_base::trunc);
+    std::ofstream   options_ofs(options_lua.get_wcs(), std::ios_base::trunc);
     if (!options_ofs.is_open())
         throw std::runtime_error("Couldn't open options.lua");
     options_ofs << file_content;
@@ -123,7 +120,8 @@ auto Module_M2000C::_get_detent_from_file(std::string &file_content) const -> it
         throw std::runtime_error("Couldn't find THROTTLE_AB_BLOCK key in lua");
     cursor += AB_detent_key.length() + 3; // Points to the value after the " = "
 
-    auto LF_char = std::find(cursor, mirage_block_end, '\n');
+    auto LF_char = std::find(cursor, mirage_block_end,
+		[](char c) { return c == '\r' || c == '\n'; });
     if (LF_char == mirage_block_end)
         throw std::runtime_error("Corrupted lua file, oh no");
 
@@ -144,17 +142,10 @@ Module_MirageF1::Module_MirageF1(std::wstring const& DCS_ws_path) : AModule(_dis
     if (attribs != INVALID_FILE_ATTRIBUTES)
         _is_installed = attribs & FILE_ATTRIBUTE_DIRECTORY;
 
-    WCHAR *saved_games_path;
+	InteropString options_lua = getSavedGamesPath() + L"\\DCS.openbeta\\Config\\options.lua";
 
-    HRESULT hr = SHGetKnownFolderPath(FOLDERID_SavedGames, 0, NULL, &saved_games_path);
-    if (hr != S_OK || saved_games_path == NULL)
-        throw std::runtime_error("Unable to get Saved Games folder path");
-    std::wstring    options_lua_path = saved_games_path;
-    options_lua_path += L"\\DCS.openbeta\\Config\\options.lua";
-    CoTaskMemFree(saved_games_path);
-
-    std::ifstream   options_ifs(options_lua_path.c_str());
-    if (!options_ifs.is_open())
+	std::ifstream   options_ifs(options_lua.get_wcs());
+	if (!options_ifs.is_open())
         throw std::runtime_error("Couldn't open options.lua");
 
     std::stringstream   options_sstream;
@@ -171,18 +162,10 @@ int Module_MirageF1::set_detent(float pos)
         throw std::logic_error("Tried to set AB on non-existant module\n\
 You might not have this module installed");
 
+	InteropString options_lua = getSavedGamesPath() + L"\\DCS.openbeta\\Config\\options.lua";
 
-    WCHAR *saved_games_path;
-
-    HRESULT hr = SHGetKnownFolderPath(FOLDERID_SavedGames, 0, NULL, &saved_games_path);
-    if (hr != S_OK || saved_games_path == NULL)
-        throw std::runtime_error("Unable to get Saved Games folder path");
-    std::wstring    options_lua_path = saved_games_path;
-    options_lua_path += L"\\DCS.openbeta\\Config\\options.lua";
-    CoTaskMemFree(saved_games_path);
-
-    std::ifstream   options_ifs(options_lua_path.c_str());
-    if (!options_ifs.is_open())
+	std::ifstream   options_ifs(options_lua.get_wcs());
+	if (!options_ifs.is_open())
         throw std::runtime_error("Couldn't open options.lua");
 
     std::stringstream   options_sstream;
@@ -192,7 +175,7 @@ You might not have this module installed");
     auto [begin_detent, end_detent] = _get_detent_from_file(file_content);
     file_content.replace(begin_detent, end_detent, std::to_string(pos * 100) + ',');
 
-    std::ofstream   options_ofs(options_lua_path.c_str(), std::ios_base::trunc);
+    std::ofstream   options_ofs(options_lua.get_wcs(), std::ios_base::trunc);
     if (!options_ofs.is_open())
         throw std::runtime_error("Couldn't open options.lua");
     options_ofs << file_content;
@@ -214,8 +197,8 @@ You might not have this module installed");
 
 auto Module_MirageF1::_get_detent_from_file(std::string &file_content) const -> iterator_pair
 {
-    constexpr const std::string_view mirage_key = "[\"Mirage-F1\"] = {";
-    constexpr const std::string_view AB_detent_key = "[\"F1SelectedABDetentPos\"]";
+    constexpr const std::string_view mirage_key		= "[\"Mirage-F1\"] = {";
+    constexpr const std::string_view AB_detent_key	= "[\"F1SelectedABDetentPos\"]";
 
     auto mirage_block_begin = std::search(file_content.begin(), file_content.end(),
         mirage_key.begin(), mirage_key.end());
@@ -229,7 +212,8 @@ auto Module_MirageF1::_get_detent_from_file(std::string &file_content) const -> 
         throw std::runtime_error("Couldn't find F1SelectedABDetentPos key in lua");
     cursor += AB_detent_key.length() + 3; // Points to the value after the " = "
 
-    auto LF_char = std::find(cursor, mirage_block_end, '\n');
+    auto LF_char = std::find_if(cursor, mirage_block_end,
+		[](char c) { return c == '\r' || c == '\n'; });
     if (LF_char == mirage_block_end)
         throw std::runtime_error("Corrupted lua file, oh no");
 

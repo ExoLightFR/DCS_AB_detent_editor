@@ -15,6 +15,7 @@
 // Other headers (OS, 3rd party, etc)
 #include <Windows.h>
 #include <shlobj.h>
+#include "InteropString.hpp"
 
 // Debug
 #include <iostream>
@@ -48,6 +49,7 @@ class AModule
 
 		std::string const&  name() const;
 		bool                is_installed() const;
+		InteropString		getSavedGamesPath() const;
 };
 
 // TODO: read detent from file on construction
