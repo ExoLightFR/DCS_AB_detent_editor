@@ -8,7 +8,7 @@ std::string	InteropString::wcs_to_mbs(std::wstring const& wcs)
 
 	size_t new_buf_len = WideCharToMultiByte(CP_UTF8, 0, wcs.c_str(), -1, NULL, 0, NULL, NULL);
 	char* multibyte_buffer = new char[new_buf_len];
-	WideCharToMultiByte(CP_UTF8, 0, wcs.c_str(), -1, multibyte_buffer, new_buf_len, NULL, NULL);
+	WideCharToMultiByte(CP_UTF8, 0, wcs.c_str(), -1, multibyte_buffer, (int)new_buf_len, NULL, NULL);
 	std::string retval(multibyte_buffer);
 	delete[] multibyte_buffer;
 	return retval;
@@ -22,7 +22,7 @@ std::wstring	InteropString::mbs_to_wcs(std::string const& mbs)
 	// https://learn.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-multibytetowidechar
 	size_t new_buf_len = MultiByteToWideChar(CP_UTF8, 0, mbs.c_str(), -1, NULL, 0);
 	WCHAR* widechar_buffer = new WCHAR[new_buf_len];
-	MultiByteToWideChar(CP_UTF8, 0, mbs.c_str(), -1, widechar_buffer, new_buf_len);
+	MultiByteToWideChar(CP_UTF8, 0, mbs.c_str(), -1, widechar_buffer, (int)new_buf_len);
 	std::wstring retval(widechar_buffer);
 	delete[] widechar_buffer;
 	return retval;

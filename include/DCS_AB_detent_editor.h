@@ -20,6 +20,8 @@
 auto    selected_module_Combo(std::string const &DCS_path) -> std::shared_ptr<AModule>;
 void    render_main_window(ImGuiIO &io, bool &show_demo_window);
 
+std::pair<uint16_t, bool>	peripheral_block();
+
 void    error_popup(std::string const &error_msg, bool *error_popup);
 
 std::string     wcstring_to_mbstring(std::wstring const &src);

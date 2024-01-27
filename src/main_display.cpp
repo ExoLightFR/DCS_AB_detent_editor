@@ -46,12 +46,12 @@ static void _throttle_line(float throttle, ImVec4 AB_colour, bool *invert, std::
         module->set_detent(throttle);
         std::clog << "New detend set at " << throttle << std::endl;
     }
-    if (!enable_AB_button)
-        ImGui::EndDisabled();
 
     ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 
     ImGui::Checkbox("Invert", invert);
+    if (!enable_AB_button)
+        ImGui::EndDisabled();
 }
 
 // Tries to get different Windows Registry entries to find a DCS install path
@@ -103,8 +103,7 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window)
 {
     static float            throttle = 0.0f;
     static ImVec4           AB_colour = { RGB_TO_NORMED_FLOAT(32, 192, 32), 1.0f }; // strictly useless, just for debugging
-    static int              index_axis = 0;
-    static bool             invert = true;
+    static bool             invert = false;
     // static std::string      DCS_mbs_path = _try_get_DCS_path();
 	static InteropString	DCS_path = _try_get_DCS_path();
 
@@ -125,8 +124,17 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window)
 
     ImGui::Separator();
 
-    _throttle_line(throttle, AB_colour, &invert, module,
-        module->is_installed() && index_axis != -1);
+	auto [axis_value, enable] = peripheral_block();
+	throttle = 1 - float(axis_value) / UINT16_MAX;
+	if (invert)
+		throttle = 1 - throttle;
+
+	if (module->is_installed())
+	{
+		_throttle_line(throttle, AB_colour, &invert, module,
+			module->is_installed() && enable);
+	}
+
 #ifdef _DEBUG
     ImGui::Separator();
 
