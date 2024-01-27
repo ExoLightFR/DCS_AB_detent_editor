@@ -4,6 +4,7 @@
 
 #include <DCS_AB_detent_editor.h>
 #include <AModule.h>
+#include "InteropString.hpp"
 
 #include "imgui.h"
 #include <imgui_stdlib.h>
@@ -13,6 +14,7 @@
 #include <iostream>
 #include <array>
 #include <vector>
+#include <string_view>
 
 #include <locale>
 
@@ -56,7 +58,7 @@ static void _throttle_line(float throttle, ImVec4 AB_colour, bool *invert, std::
 // Returns an empty string if nothing is found.
 static std::string _try_get_DCS_path()
 {
-    constexpr const WCHAR *try_registries[] = {
+    constexpr const std::wstring_view try_registries[] = {
         L"SOFTWARE\\Eagle Dynamics\\DCS World",
         L"Software\\Eagle Dynamics\\DCS World",
         L"SOFTWARE\\Eagle Dynamics\\DCS World OpenBeta",
@@ -64,9 +66,9 @@ static std::string _try_get_DCS_path()
     };
     std::wstring    DCS_ws_path;
 
-    for (unsigned int i = 0; i < ARRAY_LEN(try_registries); ++i)
+    for (auto &key : try_registries)
     {
-        if (RegGetString(HKEY_CURRENT_USER, try_registries[i], L"Path", DCS_ws_path) == 0)
+        if (RegGetString(HKEY_CURRENT_USER, key.data(), L"Path", DCS_ws_path) == 0)
         {
             return wcstring_to_mbstring(DCS_ws_path);
         }
@@ -75,22 +77,20 @@ static std::string _try_get_DCS_path()
 }
 
 // FIXME: Unicode support doesn't work.
-static void _DCS_path_line(std::string &DCS_mbs_path)
+static void _DCS_path_line(InteropString &DCS_path)
 {
-    size_t  converted;
-    WCHAR   widechar_buffer[MAX_PATH + 1];
-    bool    dir_exists = false;
+	std::string	text_buf = DCS_path;
 
-    mbstowcs_s(&converted, widechar_buffer, MAX_PATH + 1, DCS_mbs_path.c_str(), MAX_PATH);
-    DWORD attribs = GetFileAttributesW(widechar_buffer);
-    if (attribs != INVALID_FILE_ATTRIBUTES)
-        dir_exists = attribs & FILE_ATTRIBUTE_DIRECTORY;
+    DWORD attribs = GetFileAttributesW(DCS_path.get_wcs().c_str());
+	bool dir_exists = attribs != INVALID_FILE_ATTRIBUTES && (attribs & FILE_ATTRIBUTE_DIRECTORY);
 
     if (!dir_exists)
         ImGui::PushStyleColor(ImGuiCol_Text, {0.9f, 0.0f, 0.0f, 1.0f});
+
     ImGui::InputTextWithHint("DCS installation path",
-        "i.e. C:\\Program Files\\Eagle Dynamics\\DCS World",
-        &DCS_mbs_path);
+        "i.e. C:\\Program Files\\Eagle Dynamics\\DCS World",  &text_buf);
+	DCS_path = text_buf;
+
     if (!dir_exists)
     {
         ImGui::PopStyleColor();
@@ -105,7 +105,8 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window)
     static ImVec4           AB_colour = { RGB_TO_NORMED_FLOAT(32, 192, 32), 1.0f }; // strictly useless, just for debugging
     static int              index_axis = 0;
     static bool             invert = true;
-    static std::string      DCS_mbs_path = _try_get_DCS_path();
+    // static std::string      DCS_mbs_path = _try_get_DCS_path();
+	static InteropString	DCS_path = _try_get_DCS_path();
 
     ImGui::SetNextWindowSize(io.DisplaySize);
     ImGui::SetNextWindowPos({ 0, 0 });
@@ -118,10 +119,9 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window)
 
     ImGui::Begin("main", nullptr, flags);
 
-    _DCS_path_line(DCS_mbs_path);
+    _DCS_path_line(DCS_path);
 
-    std::shared_ptr<AModule> module = selected_module_Combo(DCS_mbs_path);
-
+    std::shared_ptr<AModule> module = selected_module_Combo(DCS_path);
 
     ImGui::Separator();
 

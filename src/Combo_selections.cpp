@@ -6,8 +6,6 @@
 #include <memory>
 #include <vector>
 
-#define ARRAY_LEN(x)    sizeof(x) / sizeof(x[0])
-
 // Returns a vector of shared_ptr<AModule>, which contains all of the supported modules by the software.
 // AModule is derived by classes of specific modules, see AModule.h
 static std::vector< std::shared_ptr<AModule> >

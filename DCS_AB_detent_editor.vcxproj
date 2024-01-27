@@ -109,7 +109,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>include;imgui\include;glfw/include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,7 +130,7 @@
       <AdditionalIncludeDirectories>include;imgui\include;glfw/include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,6 +160,8 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
     <ClCompile Include="src\AModule.cpp" />
     <ClCompile Include="src\gui_utils.cpp" />
     <ClCompile Include="src\Combo_selections.cpp" />
+    <ClCompile Include="src\hardware_combos.cpp" />
+    <ClCompile Include="src\InteropString.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\main_display.cpp" />
     <ClCompile Include="src\utils.cpp" />
@@ -167,6 +169,11 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
   <ItemGroup>
     <ClInclude Include="include\AModule.h" />
     <ClInclude Include="include\DCS_AB_detent_editor.h" />
+    <ClInclude Include="include\imgui_stdlib.h" />
+    <ClInclude Include="include\InteropString.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
