@@ -12,6 +12,9 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{918dbb94-1a6a-4800-aafa-c7053f8f0864}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{98e31546-5fc8-4dfa-8f25-5df527a12eb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AModule.cpp">
@@ -85,8 +88,14 @@
     <ClInclude Include="include\Peripheral.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sol2\sol.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\lua\lua54.lib" />
   </ItemGroup>
 </Project>

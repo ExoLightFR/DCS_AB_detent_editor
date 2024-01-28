@@ -99,6 +99,8 @@ static void _DCS_path_line(InteropString &DCS_path)
     }
 }
 
+[[nodiscard]] std::string	lua_testing_shit();
+
 void    render_main_window(ImGuiIO &io, bool &show_demo_window)
 {
     static float            throttle = 0.0f;
@@ -119,6 +121,10 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window)
     ImGui::Begin("main", nullptr, flags);
 
     _DCS_path_line(DCS_path);
+
+	std::string test = lua_testing_shit();
+	std::cout << test << std::endl;
+	// ImGui::Text(test.c_str());
 
     std::shared_ptr<AModule> module = selected_module_Combo(DCS_path);
 

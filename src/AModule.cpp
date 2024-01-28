@@ -120,7 +120,7 @@ auto Module_M2000C::_get_detent_from_file(std::string &file_content) const -> it
         throw std::runtime_error("Couldn't find THROTTLE_AB_BLOCK key in lua");
     cursor += AB_detent_key.length() + 3; // Points to the value after the " = "
 
-    auto LF_char = std::find(cursor, mirage_block_end,
+    auto LF_char = std::find_if(cursor, mirage_block_end,
 		[](char c) { return c == '\r' || c == '\n'; });
     if (LF_char == mirage_block_end)
         throw std::runtime_error("Corrupted lua file, oh no");

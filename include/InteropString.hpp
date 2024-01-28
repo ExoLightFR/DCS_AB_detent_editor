@@ -12,6 +12,8 @@ public:
 	InteropString() = default;
 	InteropString(std::string const& mbs) : _mbs(mbs), _wcs(mbs_to_wcs(mbs)) {}
 	InteropString(std::wstring const& wcs) : _mbs(wcs_to_mbs(wcs)), _wcs(wcs) {}
+	InteropString(const char *mbs) : _mbs(mbs), _wcs(mbs_to_wcs(mbs)) {}
+	InteropString(const wchar_t *wcs) : _mbs(wcs_to_mbs(wcs)), _wcs(wcs) {}
 
 	InteropString& operator=(InteropString const&) = default;
 	InteropString& operator=(std::string const& mbs)

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <Windows.h>
 
