@@ -123,8 +123,6 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window)
     _DCS_path_line(DCS_path);
 
 	std::string test = lua_testing_shit();
-	std::cout << test << std::endl;
-	ImGui::Text(test.c_str());
 
     std::shared_ptr<AModule> module = selected_module_Combo(DCS_path);
 
@@ -140,6 +138,7 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window)
 		_throttle_line(throttle, AB_colour, &invert, module,
 			module->is_installed() && enable);
 	}
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 #ifdef _DEBUG
     ImGui::Separator();

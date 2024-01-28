@@ -40,7 +40,7 @@ static void glfw_error_callback(int error, const char* description)
 int main(int, char**)
 {
 	HWND windowHandle = GetConsoleWindow();
-	ShowWindow(windowHandle, SW_SHOW);
+	ShowWindow(windowHandle, SW_HIDE);
 
 	glfwSetErrorCallback(glfw_error_callback);
 	if (!glfwInit())

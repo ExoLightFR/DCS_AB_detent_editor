@@ -2,6 +2,7 @@
 #include <cassert>
 #include <format>
 #include <map>
+#include <iomanip>
 #include <Windows.h>
 #include <shlobj.h>
 #define SOL_ALL_SAFETIES_ON 1
@@ -30,7 +31,7 @@ namespace std
 		{
 			double value = obj.as<double>();
 			std::stringstream out;
-			out << value;
+			out << setprecision(14) << value;
 			return out.str();
 		}
 		case sol::type::string:
@@ -41,8 +42,10 @@ namespace std
 	}
 }
 
-using std::optional;
-
+/*
+* A TableValue can either be a Lua value (sol::object), i.e. bool, string, number, string...
+* or it can be another table, to allow for nested Lua tables.
+*/
 struct TableValue
 {
 	using table_t = std::map<std::string, TableValue>;
@@ -51,6 +54,10 @@ struct TableValue
 	std::variant<table_t, value_t>	val;
 };
 
+/*
+* Converts a sol::table from a Lua state to a std::map that can contain sol::objects and other,
+* nested maps.
+*/
 std::map<std::string, TableValue>	lua_table_to_map(sol::table const& table)
 {
 	std::map<std::string, TableValue>	res;
@@ -66,7 +73,11 @@ std::map<std::string, TableValue>	lua_table_to_map(sol::table const& table)
 	return res;
 }
 
-std::string	dump_lua_table(TableValue::table_t const& table, int depth)
+/*
+* Returns a string that's a dump of the given table, converted from a sol::table.
+* The depth parameter established the amount of tabulation for formatting.
+*/
+std::string	dump_lua_table(TableValue::table_t const& table, int depth = 1)
 {
 	const std::string tabulation(depth, '\t');
 	std::string res;
@@ -114,19 +125,7 @@ static std::string	testing_options_lua(InteropString options_lua)
 	return std::format("Test: {}, {}", old_value, new_value);
 }
 
-/*
-config = 
-{
-    ["restoreAfterRestart"] = true,
-    ["mode"] = "hidden",
-    ["hotkey"] = "Ctrl+Shift+escape",
-    ["windowPosition"] = 
-    {
-        ["y"] = 850,
-        ["x"] = 0,
-    }, -- end of ["windowPosition"]
-} -- end of config
-*/
+#include <fstream>
 
 [[nodiscard]] std::string	lua_testing_shit()
 {
@@ -141,12 +140,25 @@ config =
 
 	// return testing_options_lua(saved_games + "\\DCS.openbeta\\Config\\options.lua";);
 
-	sol::state	lua;
+	sol::state lua;
 	lua.open_libraries(sol::lib::base);
 	lua.script_file(saved_games + "\\DCS.openbeta\\Config\\options.lua");
 
 	TableValue::table_t	srs_conf = lua_table_to_map(lua["options"]);
 
 	std::string res = dump_lua_table(srs_conf, 1);
+
+	static bool did_copy = false;
+	if (!did_copy)
+	{
+		std::string copy_path = saved_games + "\\DCS.openbeta\\Config\\options_copy.lua";
+		std::ofstream copy(copy_path);
+		copy << "options = {\n";
+		copy << res;
+		copy << "}\n";
+		copy.close();
+		did_copy = true;
+	}
+
 	return res;
 }
