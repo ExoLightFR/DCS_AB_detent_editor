@@ -8,6 +8,39 @@
 #include "sol/sol.hpp"
 #include "InteropString.hpp"
 
+template <typename T> requires std::is_floating_point<T>::value
+inline std::pair<T, T>	modf2(T val)
+{
+	T int_part, fract_part;
+	fract_part = modf(val, &int_part);
+	return { int_part, fract_part };
+}
+
+namespace std
+{
+	string	to_string(sol::object const& obj)
+	{
+		switch (obj.get_type())
+		{
+		case sol::type::boolean:
+			return obj.as<bool>() ? "true" : "false";
+		case sol::type::nil:
+			return "nil";
+		case sol::type::number:
+		{
+			double value = obj.as<double>();
+			std::stringstream out;
+			out << value;
+			return out.str();
+		}
+		case sol::type::string:
+			return std::format(R"("{}")", obj.as<string>());
+		default:
+			return "???";
+		}
+	}
+}
+
 using std::optional;
 
 struct TableValue
@@ -15,7 +48,7 @@ struct TableValue
 	using table_t = std::map<std::string, TableValue>;
 	using value_t = sol::object;
 
-	std::variant<table_t, value_t>	x;
+	std::variant<table_t, value_t>	val;
 };
 
 std::map<std::string, TableValue>	lua_table_to_map(sol::table const& table)
@@ -37,12 +70,26 @@ std::string	dump_lua_table(TableValue::table_t const& table, int depth)
 {
 	const std::string tabulation(depth, '\t');
 	std::string res;
+
 	for (auto& [k, v] : table)
 	{
-		if (std::holds_alternative<TableValue::table_t>(v.x))
-			res += tabulation + k + ":\n" + dump_lua_table(std::get<TableValue::table_t>(v.x), depth + 1);
+		if (std::holds_alternative<TableValue::table_t>(v.val))
+		{
+			res += std::format("{}[\"{}\"] = {{\n{}{}}},\n",
+				tabulation,
+				k,
+				dump_lua_table(std::get<TableValue::table_t>(v.val), depth + 1),
+				tabulation
+			);
+		}
 		else
-			res += tabulation + k + '\n';
+		{
+			res += std::format("{}[\"{}\"] = {},\n",
+				tabulation,
+				k,
+				std::to_string(std::get<TableValue::value_t>(v.val))
+			);
+		}
 	}
 	return res;
 }

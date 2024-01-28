@@ -124,7 +124,7 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window)
 
 	std::string test = lua_testing_shit();
 	std::cout << test << std::endl;
-	// ImGui::Text(test.c_str());
+	ImGui::Text(test.c_str());
 
     std::shared_ptr<AModule> module = selected_module_Combo(DCS_path);
 
