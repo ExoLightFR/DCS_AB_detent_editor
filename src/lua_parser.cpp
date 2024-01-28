@@ -152,7 +152,7 @@ static std::string	testing_options_lua(InteropString options_lua)
 	if (!did_copy)
 	{
 		std::string copy_path = saved_games + "\\DCS.openbeta\\Config\\options_copy.lua";
-		std::ofstream copy(copy_path);
+		std::ofstream copy(copy_path, std::ios::out | std::ios::binary); // binary removes CRLF
 		copy << "options = {\n";
 		copy << res;
 		copy << "}\n";
