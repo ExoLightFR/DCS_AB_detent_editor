@@ -1,6 +1,34 @@
 #include "InteropString.hpp"
 #include <Windows.h>
 
+InteropString& InteropString::operator=(std::string const& mbs)
+{
+	_mbs = mbs;
+	_wcs = mbs_to_wcs(mbs);
+	return *this;
+}
+
+InteropString& InteropString::operator=(std::wstring const& wcs)
+{
+	_mbs = wcs_to_mbs(wcs);
+	_wcs = wcs;
+	return *this;
+}
+
+InteropString& InteropString::operator+=(std::string const& mbs)
+{
+	_mbs += mbs;
+	_wcs += mbs_to_wcs(mbs);
+	return *this;
+}
+
+InteropString& InteropString::operator+=(std::wstring const& wcs)
+{
+	_mbs += wcs_to_mbs(wcs);
+	_wcs += wcs;
+	return *this;
+}
+
 InteropString	operator+(InteropString const& lhs, std::string const& rhs)
 {
 	InteropString ret = lhs;
