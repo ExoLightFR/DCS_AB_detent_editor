@@ -158,6 +158,7 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\AModule.cpp" />
+    <ClCompile Include="src\AModule2.cpp" />
     <ClCompile Include="src\gui_utils.cpp" />
     <ClCompile Include="src\Combo_selections.cpp" />
     <ClCompile Include="src\lua_parser.cpp" />
@@ -170,6 +171,7 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AModule.h" />
+    <ClInclude Include="include\AModule2.hpp" />
     <ClInclude Include="include\DCS_AB_detent_editor.h" />
     <ClInclude Include="include\imgui_stdlib.h" />
     <ClInclude Include="include\InteropString.hpp" />
