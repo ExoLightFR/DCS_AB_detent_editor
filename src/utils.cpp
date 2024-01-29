@@ -78,3 +78,14 @@ InteropString	get_saved_games_path()
 	CoTaskMemFree(saved_games_path);
 	return saved_games;
 }
+
+std::string	trim_str(std::string_view str)
+{
+	int i = 0;
+	while (i < str.length() && isspace(str[i]))
+		++i;
+	int j = (int)str.length() - 1;
+	while (j > 0 && isspace(str[j]))
+		--j;
+	return std::string(str, i, std::max(j - i + 1, 0));
+}

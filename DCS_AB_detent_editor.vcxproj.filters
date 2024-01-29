@@ -77,6 +77,9 @@
     <ClCompile Include="src\DCS_saved_games_field.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\module_selection_combo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AModule.h">

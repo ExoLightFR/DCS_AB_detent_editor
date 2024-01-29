@@ -23,12 +23,15 @@ namespace v2 {
 
 		std::string const&	name() const			{ return _name; }
 		[[nodiscard]] bool	is_installed() const	{ return _installed; }
+		[[nodiscard]] bool	is_enabled() const		{ return _enabled; }
 
 		virtual float	get_detent() const	{ return _detent; }
 		virtual bool	set_detent(float value) = 0;
 
 		static std::unique_ptr<AModule>
-			get_module(InteropString const& DCS_path, std::string_view module_name);
+			get_module(std::string_view module_name,
+				InteropString const& DCS_install_path,
+				InteropString const& DCS_saved_games_path);
 
 	public:
 		inline static const std::array<std::string_view, 3>	supported_modules = {
@@ -45,7 +48,8 @@ namespace v2 {
 
 		[[nodiscard]] bool	update_detent_from_conf_file();
 	public:
-		ModuleM2000C(InteropString const& saved_games_path);
+		ModuleM2000C(InteropString const& DCS_install_path,
+			InteropString const& DCS_saved_games_path);
 		~ModuleM2000C() = default;
 
 		[[nodiscard]] bool	set_detent(float val_0_100) override final;

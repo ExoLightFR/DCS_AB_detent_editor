@@ -1,4 +1,5 @@
 #include <string>
+#include <string_view>
 #include <filesystem>
 #include "imgui.h"
 #include "imgui_stdlib.h"
@@ -7,17 +8,18 @@
 
 // ImGuiInputTextCallbackData* data
 
+using namespace std::string_view_literals;
 namespace fs = std::filesystem;
 
 // Tries to get different Windows Registry entries to find a DCS install path
 // Returns an empty string if nothing is found.
-static bool check_DCS_installed()
+static InteropString try_get_DCS_install_path()
 {
 	constexpr std::wstring_view try_registries[] = {
+		L"SOFTWARE\\Eagle Dynamics\\DCS World OpenBeta",
+		L"Software\\Eagle Dynamics\\DCS World OpenBeta",
 		L"SOFTWARE\\Eagle Dynamics\\DCS World",
 		L"Software\\Eagle Dynamics\\DCS World",
-		L"SOFTWARE\\Eagle Dynamics\\DCS World OpenBeta",
-		L"Software\\Eagle Dynamics\\DCS World OpenBeta"
 	};
 	std::wstring    DCS_ws_path;
 
@@ -26,10 +28,10 @@ static bool check_DCS_installed()
 		if (RegGetString(HKEY_CURRENT_USER, key.data(), L"Path", DCS_ws_path) == 0)
 		{
 			if (fs::exists(DCS_ws_path) && fs::is_directory(DCS_ws_path))
-				return true;
+				return DCS_ws_path;
 		}
 	}
-	return false;
+	return "";
 }
 
 static std::string	try_get_DCS_Saved_Games_path()
@@ -49,20 +51,12 @@ static std::string	try_get_DCS_Saved_Games_path()
 	return "";
 }
 
-InteropString DCS_Saved_Games_field()
+std::pair<InteropString, bool>	DCS_Saved_Games_path_field(InteropString const& DCS_install_path)
 {
-	static bool			DCS_install_detected = check_DCS_installed();
+	static bool			DCS_install_detected = DCS_install_path.get_mbs().size();
 	static std::string	text_buf = try_get_DCS_Saved_Games_path();
 
 	bool dir_exists = fs::exists(text_buf) && fs::is_directory(text_buf);
-
-	if (!DCS_install_detected && dir_exists)
-	{
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f),
-			R"(Info: Your DCS installation was not found, but the software will continue to work
-as usual and change settings in the DCS Saved Games folder.)"
-		);
-	}
 
 	if (!dir_exists)
 		ImGui::PushStyleColor(ImGuiCol_Text, { 0.9f, 0.0f, 0.0f, 1.0f });
@@ -71,6 +65,7 @@ as usual and change settings in the DCS Saved Games folder.)"
 		"DCS Saved Games directory",
 		R"(i.e. C:\Users\You\Saved Games\DCS.openbeta)",
 		&text_buf);
+	text_buf = trim_str(text_buf);
 
 	if (!dir_exists)
 	{
@@ -78,5 +73,29 @@ as usual and change settings in the DCS Saved Games folder.)"
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("Directory doesn't exist");
 	}
-	return text_buf;
+	return { text_buf, dir_exists };
+}
+
+std::pair<InteropString, bool>	DCS_install_path_field()
+{
+	static std::string	text_buf = try_get_DCS_install_path();
+
+	bool dir_exists = fs::exists(text_buf) && fs::is_directory(text_buf);
+
+	if (!dir_exists)
+		ImGui::PushStyleColor(ImGuiCol_Text, { 0.9f, 0.0f, 0.0f, 1.0f });
+
+	ImGui::InputTextWithHint(
+		"DCS installation path",
+		R"(i.e. C:\Program Files\Eagle Dynamics\DCS World)",
+		&text_buf);
+	text_buf = trim_str(text_buf);
+
+	if (!dir_exists)
+	{
+		ImGui::PopStyleColor();
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("Directory doesn't exist");
+	}
+	return { text_buf, dir_exists };
 }

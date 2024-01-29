@@ -3,6 +3,7 @@
 #include <functional>
 #include <cassert>
 #include <fstream>
+#include <filesystem>
 #include <Windows.h>
 #include "lua_parsing.h"
 
@@ -10,15 +11,17 @@ InteropString	get_saved_games_path();
 
 using namespace v2;
 using namespace std::literals;
+namespace fs = std::filesystem;
 
 std::unique_ptr<AModule>
-AModule::get_module(InteropString const& DCS_path, std::string_view module_name)
+AModule::get_module(std::string_view module_name, InteropString const& DCS_install_path,
+	InteropString const& DCS_saved_games_path)
 {
 	using functor_t	= std::function<std::unique_ptr<AModule>()>;
 	using unique	= std::unique_ptr<AModule>;
 
 	std::map<std::string_view, functor_t>	factories = {
-		{ "M-2000C",	[&]{return unique(new ModuleM2000C(DCS_path));}		},
+		{ "M-2000C",	[&]{return unique(new ModuleM2000C(DCS_install_path, DCS_saved_games_path));}	},
 		{ "Mirage-F1",	[&]{return unique(new ModuleMirageF1);}				},
 		{ "F-15E",		[&]{return unique(new ModuleF15E);}					},
 	};
@@ -35,21 +38,17 @@ AModule::get_module(InteropString const& DCS_path, std::string_view module_name)
 /* ======================================== Mirage 2000C ======================================== */
 /* ============================================================================================== */
 
-ModuleM2000C::ModuleM2000C(InteropString const& saved_games_path)
+ModuleM2000C::ModuleM2000C(InteropString const& DCS_install_path,
+	InteropString const& DCS_saved_games_path)
 {
 	_name = DISPLAY_NAME;
-	InteropString module_path = saved_games_path + "\\Mods\\aircraft\\" + MODULE_NAME.data();
-	_conf_file = saved_games_path + "\\options.lua";
+	InteropString module_path = DCS_install_path + "\\Mods\\aircraft\\" + MODULE_NAME.data();
+	_conf_file = DCS_saved_games_path + "\\Config\\options.lua";
 
-	DWORD attribs = GetFileAttributesW(module_path.get_wcs().c_str());
-	if (attribs == INVALID_FILE_ATTRIBUTES)
-		return;
-	else
-		_installed = attribs & FILE_ATTRIBUTE_DIRECTORY;
+	_installed = fs::exists(module_path.get_mbs()) && fs::is_directory(module_path.get_mbs());
 
 	if (_installed)
 		_enabled = update_detent_from_conf_file();
-
 }
 
 /*
@@ -59,8 +58,11 @@ bool	ModuleM2000C::update_detent_from_conf_file()
 {
 	sol::state lua;
 	lua.open_libraries(sol::lib::base);
-	lua.script_file(_conf_file);
+	// TESTME/FIXME: throws when failing, would like it to just return an error
+	if (!lua.safe_script_file(_conf_file).valid())
+		return false;
 
+	// Why does this not throw when incorrect, but safe_scritp_file does?
 	if (!lua["options"]["plugins"]["M-2000C"]["THROTTLE_AB_DETENT"].valid())
 		return false;
 

@@ -36,11 +36,17 @@ static void glfw_error_callback(int error, const char* description)
 	fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
+#ifdef NDEBUG
+# define SHOW_CONSOLE SW_HIDE
+#else
+# define SHOW_CONSOLE SW_SHOW
+#endif
+
 // Main code
 int main(int, char**)
 {
 	HWND windowHandle = GetConsoleWindow();
-	ShowWindow(windowHandle, SW_HIDE);
+	ShowWindow(windowHandle, SHOW_CONSOLE);
 
 	glfwSetErrorCallback(glfw_error_callback);
 	if (!glfwInit())
