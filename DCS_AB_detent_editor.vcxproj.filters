@@ -74,15 +74,15 @@
     <ClCompile Include="src\AModule2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\DCS_saved_games_field.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\DCS_AB_detent_editor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\imgui_stdlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\InteropString.hpp">
@@ -98,6 +98,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\lua_parsing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PerformanceTimer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
