@@ -3,17 +3,9 @@
 #include <imgui.h>
 #include <utility>
 
-static void HelpMarker(const char* desc)
-{
-	ImGui::TextDisabled("(?)");
-	if (ImGui::BeginItemTooltip())
-	{
-		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-		ImGui::TextUnformatted(desc);
-		ImGui::PopTextWrapPos();
-		ImGui::EndTooltip();
-	}
-}
+/* ============================================================================================== */
+/* ========================================== HELPERS =========================================== */
+/* ============================================================================================== */
 
 static BOOL CALLBACK	InsertPeripheralCallback(LPCDIDEVICEINSTANCE instance, LPVOID userData)
 {
@@ -57,23 +49,27 @@ static Axis	*get_default_selected_axis(Peripheral *periph)
 	return &periph->axies[0];
 }
 
-std::pair<uint16_t, bool>	peripheral_block()
+/* ============================================================================================== */
+/* ========================================= COMPONENTS ========================================= */
+/* ============================================================================================== */
+
+static void component_help_marker(const char* desc)
 {
-	static std::vector<Peripheral>	periphs = get_peripherals();
-	static Peripheral	*selected_periph	= periphs.size() ? &periphs[0] : nullptr;
-	static Axis			*selected_axis		= get_default_selected_axis(selected_periph);
+	ImGui::TextDisabled("(?)");
+	if (ImGui::BeginItemTooltip())
+	{
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
 
-	auto refresh_all = [&] {
-		periphs = get_peripherals();
-		selected_periph = periphs.size() ? &periphs[0] : nullptr;
-		selected_axis = get_default_selected_axis(selected_periph);
-		};
-
-	if (ImGui::Button("Rescan for devices"))
-		refresh_all();
-	ImGui::SameLine();
-	HelpMarker("If you don't find your device in this list, make sure it's plugged in \
-your computer correctly, and then click this button.");
+static void component_peripheral_combo(std::vector<Peripheral> &periphs,
+	Peripheral **p_selected_periph, Axis **p_selected_axis)
+{
+	Peripheral	*selected_periph = *p_selected_periph;
+	Axis		*selected_axis = *p_selected_axis;
 
 	std::string_view preview = (selected_periph ? selected_periph->name.c_str() : "No device found");
 	if (ImGui::BeginCombo("Devices", preview.data()))
@@ -90,10 +86,17 @@ your computer correctly, and then click this button.");
 		}
 		ImGui::EndCombo();
 	}
-	if (!selected_periph)
-		return { UINT16_MAX, false };
-	
-	preview = selected_axis ? selected_axis->name.c_str() : "No axies found";
+	*p_selected_periph = selected_periph;
+	*p_selected_axis = selected_axis;
+}
+
+static void component_axis_combo(std::vector<Peripheral>& periphs,
+	Peripheral** p_selected_periph, Axis** p_selected_axis)
+{
+	Peripheral* selected_periph = *p_selected_periph;
+	Axis* selected_axis = *p_selected_axis;
+
+	std::string preview = selected_axis ? selected_axis->name.c_str() : "No axies found";
 	if (ImGui::BeginCombo("Axies", preview.data()))
 	{
 		for (auto& axis : selected_periph->axies)
@@ -105,6 +108,38 @@ your computer correctly, and then click this button.");
 		}
 		ImGui::EndCombo();
 	}
+	*p_selected_periph = selected_periph;
+	*p_selected_axis = selected_axis;
+}
+
+/*
+* The main component. Displays two Combos that contain the list of devices and the list of
+* axies for currently selected device.
+* Returns the axis position in range [0, UINT16_MAX], and whether axis is OK or not.
+*/
+std::pair<uint16_t, bool>	peripheral_block()
+{
+	static std::vector<Peripheral>	periphs = get_peripherals();
+	static Peripheral	*selected_periph	= periphs.size() ? &periphs[0] : nullptr;
+	static Axis			*selected_axis		= get_default_selected_axis(selected_periph);
+
+	auto refresh_all = [&] {
+		periphs = get_peripherals();
+		selected_periph = periphs.size() ? &periphs[0] : nullptr;
+		selected_axis = get_default_selected_axis(selected_periph);
+		};
+
+	if (ImGui::Button("Refresh device list"))
+		refresh_all();
+	ImGui::SameLine();
+	component_help_marker("If you don't find your device in this list, make sure it's plugged in \
+your computer correctly, and then click this button.");
+
+	component_peripheral_combo(periphs, &selected_periph, &selected_axis);
+	if (!selected_periph)
+		return { UINT16_MAX, false };
+	
+	component_axis_combo(periphs, &selected_periph, &selected_axis);
 
 	DIJOYSTATE state;
 	if (selected_periph->di_device->GetDeviceState(sizeof(state), &state) != DI_OK)
