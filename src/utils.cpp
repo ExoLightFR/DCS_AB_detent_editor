@@ -1,34 +1,8 @@
 #include <DCS_AB_detent_editor.h>
 #include <string>
 #include <stdexcept>
+#include "InteropString.hpp"
 #include <windows.h>
-
-std::string  wcstring_to_mbstring(std::wstring const &src)
-{
-	if (src.empty())
-		return "";
-
-	size_t new_buf_len = WideCharToMultiByte(CP_UTF8, 0, src.c_str(), -1, NULL, 0, NULL, NULL);
-	char    *multibyte_buffer = new char[new_buf_len];
-	WideCharToMultiByte(CP_UTF8, 0, src.c_str(), -1, multibyte_buffer, (int)new_buf_len, NULL, NULL);
-	std::string retval(multibyte_buffer);
-	delete[] multibyte_buffer;
-	return retval;
-}
-
-std::wstring  mbstring_to_wcstring(std::string const &src)
-{
-	if (src.empty())
-		return L"";
-
-	// https://learn.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-multibytetowidechar
-	size_t new_buf_len = MultiByteToWideChar(CP_UTF8, 0, src.c_str(), -1, NULL, 0);
-	WCHAR *widechar_buffer = new WCHAR[new_buf_len];
-	MultiByteToWideChar(CP_UTF8, 0, src.c_str(), -1, widechar_buffer, (int)new_buf_len);
-	std::wstring retval(widechar_buffer);
-	delete[] widechar_buffer;
-	return retval;
-}
 
 std::wstring RegGetString(HKEY hKey, const std::wstring &subKey, const std::wstring &value)
 {
@@ -90,4 +64,17 @@ int RegGetString(HKEY hKey, const std::wstring &subKey, const std::wstring &valu
 		return 2;
 	outstr.shrink_to_fit();
 	return 0;
+}
+
+InteropString	get_saved_games_path()
+{
+	WCHAR* saved_games_path;
+
+	HRESULT hr = SHGetKnownFolderPath(FOLDERID_SavedGames, 0, NULL, &saved_games_path);
+	if (hr != S_OK || saved_games_path == NULL)
+		throw std::runtime_error("Unable to get Saved Games folder path");
+
+	InteropString saved_games = std::wstring(saved_games_path);
+	CoTaskMemFree(saved_games_path);
+	return saved_games;
 }

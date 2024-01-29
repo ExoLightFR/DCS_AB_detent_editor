@@ -8,14 +8,7 @@
 #define SOL_ALL_SAFETIES_ON 1
 #include "sol/sol.hpp"
 #include "InteropString.hpp"
-
-template <typename T> requires std::is_floating_point<T>::value
-inline std::pair<T, T>	modf2(T val)
-{
-	T int_part, fract_part;
-	fract_part = modf(val, &int_part);
-	return { int_part, fract_part };
-}
+#include "lua_parsing.h"
 
 namespace std
 {
@@ -43,18 +36,6 @@ namespace std
 }
 
 /*
-* A TableValue can either be a Lua value (sol::object), i.e. bool, string, number, string...
-* or it can be another table, to allow for nested Lua tables.
-*/
-struct TableValue
-{
-	using table_t = std::map<std::string, TableValue>;
-	using value_t = sol::object;
-
-	std::variant<table_t, value_t>	val;
-};
-
-/*
 * Converts a sol::table from a Lua state to a std::map that can contain sol::objects and other,
 * nested maps.
 */
@@ -77,7 +58,7 @@ std::map<std::string, TableValue>	lua_table_to_map(sol::table const& table)
 * Returns a string that's a dump of the given table, converted from a sol::table.
 * The depth parameter established the amount of tabulation for formatting.
 */
-std::string	dump_lua_table(TableValue::table_t const& table, int depth = 1)
+std::string	dump_lua_table(TableValue::table_t const& table, int depth)
 {
 	const std::string tabulation(depth, '\t');
 	std::string res;

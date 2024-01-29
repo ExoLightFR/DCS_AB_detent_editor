@@ -10,7 +10,7 @@ const std::array<const char *, AModule::NUM_SUPPORTED_MODULES> AModule::supporte
 
 std::shared_ptr<AModule>    AModule::getModule(std::string const& DCS_path, std::string const &module_name)
 {
-    std::wstring DCS_ws_path = mbstring_to_wcstring(DCS_path);
+    std::wstring DCS_ws_path = InteropString::mbs_to_wcs(DCS_path);
 
     if (module_name == "M-2000C")
         return std::shared_ptr<AModule>(new Module_M2000C(DCS_ws_path));
@@ -24,7 +24,7 @@ std::shared_ptr<AModule>    AModule::getModule(std::string const& DCS_path, std:
 
 std::shared_ptr<AModule>    AModule::getModule(std::string const& DCS_path, std::wstring const &module_name)
 {
-    return AModule::getModule(DCS_path, wcstring_to_mbstring(module_name));
+    return AModule::getModule(DCS_path, InteropString::wcs_to_mbs(module_name));
 }
 
 std::string const& AModule::name() const

@@ -43,7 +43,6 @@ InteropString	operator+(InteropString const& lhs, std::wstring const& rhs)
 	return ret;
 }
 
-
 std::string	InteropString::wcs_to_mbs(std::wstring const& wcs)
 {
 	if (wcs.empty())

@@ -97,9 +97,13 @@
     <ClInclude Include="include\AModule2.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\lua_parsing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+    <None Include="include\utils.ipp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\lua\lua54.lib" />

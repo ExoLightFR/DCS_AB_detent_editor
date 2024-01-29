@@ -10,18 +10,21 @@ namespace v2 {
 
 	class AModule
 	{
-	private:
-		std::string	_name;
-		bool		_installed = false;
-		float		_detent = 1.01f;	// When not set, detent is > 1, so we never show AB until we know detent
+	protected:
+		std::string		_name;
+		bool			_installed = false;
+		bool			_enabled = false;
+		float			_detent = 1.01f;	// When not set, detent is > 1, so we never show AB until we know detent
+		InteropString	_conf_file;
 
 	public:
+		AModule() = default;
 		virtual ~AModule() = default;
 
 		std::string const&	name() const			{ return _name; }
 		[[nodiscard]] bool	is_installed() const	{ return _installed; }
 
-		virtual float	get_detent() const = 0;
+		virtual float	get_detent() const	{ return _detent; }
 		virtual bool	set_detent(float value) = 0;
 
 		static std::unique_ptr<AModule>
@@ -37,10 +40,16 @@ namespace v2 {
 
 	class ModuleM2000C : public AModule
 	{
+		inline static constexpr std::string_view	DISPLAY_NAME = "Mirage 2000C";
+		inline static constexpr std::string_view	MODULE_NAME = "M-2000C";
+
+		[[nodiscard]] bool	update_detent_from_conf_file();
+	public:
+		ModuleM2000C(InteropString const& saved_games_path);
 		~ModuleM2000C() = default;
 
-		float	get_detent() const override final		{ return 0; }
-		bool	set_detent(float val) override final	{ return false; }
+		[[nodiscard]] bool	set_detent(float val_0_100) override final;
+		float	get_detent() const override final		{ return _detent; }
 	};
 
 	class ModuleMirageF1 : public AModule

@@ -24,12 +24,14 @@ std::pair<uint16_t, bool>	peripheral_block();
 
 void    error_popup(std::string const &error_msg, bool *error_popup);
 
-std::string     wcstring_to_mbstring(std::wstring const &src);
-std::wstring    mbstring_to_wcstring(std::string const &src);
-
-std::wstring    RegGetString(HKEY hKey, const std::wstring &subKey, const std::wstring &value);
-int             RegGetString(HKEY hKey, const std::wstring &subKey, const std::wstring &value,
-                    std::wstring &outstr);
+// std::string     wcstring_to_mbstring(std::wstring const &src);
+// std::wstring    mbstring_to_wcstring(std::string const &src);
 
 void    TextCentered(const char *text);
 bool    ButtonCentered(const char *label, float alignment = 0.5f);
+
+/* UTILS */
+InteropString	get_saved_games_path();
+std::wstring    RegGetString(HKEY hKey, const std::wstring &subKey, const std::wstring &value);
+int             RegGetString(HKEY hKey, const std::wstring &subKey, const std::wstring &value,
+                    std::wstring &outstr);

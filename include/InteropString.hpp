@@ -20,6 +20,8 @@ public:
 	InteropString& operator=(std::wstring const& wcs);
 	InteropString& operator=(const char *mbs)		{ return operator=(std::string(mbs)); }
 	InteropString& operator=(const wchar_t *wcs)	{ return operator=(std::wstring(wcs)); }
+	InteropString& operator=(std::string_view const& mbs)	{ return operator=(std::string(mbs)); }
+	InteropString& operator=(std::wstring_view const& wcs)	{ return operator=(std::wstring(wcs)); }
 
 	operator std::string() const	{ return _mbs; }
 	operator std::wstring() const	{ return _wcs; }
@@ -28,6 +30,8 @@ public:
 	InteropString& operator+=(std::wstring const& wcs);
 	InteropString& operator+=(const char *mbs)		{ return operator+=(std::string(mbs)); }
 	InteropString& operator+=(const wchar_t *wcs)	{ return operator+=(std::wstring(wcs)); }
+	InteropString& operator+=(std::string_view const& mbs)	{ return operator+=(std::string(mbs)); }
+	InteropString& operator+=(std::wstring_view const& wcs)	{ return operator+=(std::wstring(wcs)); }
 
 	inline std::string const&	get_mbs() const noexcept	{ return _mbs; }
 	inline std::wstring const&	get_wcs() const noexcept	{ return _wcs; }

@@ -70,7 +70,7 @@ static std::string _try_get_DCS_path()
     {
         if (RegGetString(HKEY_CURRENT_USER, key.data(), L"Path", DCS_ws_path) == 0)
         {
-            return wcstring_to_mbstring(DCS_ws_path);
+            return InteropString::wcs_to_mbs(DCS_ws_path);
         }
     }
     return "";

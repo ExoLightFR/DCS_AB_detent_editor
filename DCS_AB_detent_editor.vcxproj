@@ -177,11 +177,13 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
     <ClInclude Include="include\DCS_AB_detent_editor.h" />
     <ClInclude Include="include\imgui_stdlib.h" />
     <ClInclude Include="include\InteropString.hpp" />
+    <ClInclude Include="include\lua_parsing.h" />
     <ClInclude Include="include\Peripheral.hpp" />
     <ClInclude Include="sol2\sol.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+    <None Include="include\utils.ipp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\lua\lua54.lib" />

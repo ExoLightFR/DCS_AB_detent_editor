@@ -20,10 +20,6 @@
 // Debug
 #include <iostream>
 
-// Forward declarations here to avoid circular dependancy with DCS_AB_detent_editor.h
-std::string     wcstring_to_mbstring(std::wstring const &src);
-std::wstring    mbstring_to_wcstring(std::string const &src);
-
 class AModule
 {
 	protected:
