@@ -1,6 +1,4 @@
 #include "DCS_AB_detent_editor.h"
-#include "AModule.hpp"
-#include <memory>
 #include <vector>
 
 using std::vector, std::unique_ptr;

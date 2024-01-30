@@ -1,6 +1,6 @@
+#include "DCS_AB_detent_editor.h"
 #include <filesystem>
 #include <fstream>
-#include "AModule.hpp"
 #include "lua_parsing.h"
 
 namespace fs = std::filesystem;
