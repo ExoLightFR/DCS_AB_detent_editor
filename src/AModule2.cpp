@@ -56,13 +56,19 @@ ModuleM2000C::ModuleM2000C(InteropString const& DCS_install_path,
 */
 bool	ModuleM2000C::update_detent_from_conf_file()
 {
-	sol::state lua;
+	sol::state	lua;
+	bool		success = true;
+	// For some reason I can't find a better way to not throw on error...
+	auto error_handler = [&](lua_State*, sol::protected_function_result) {
+		success = false; return sol::protected_function_result();
+	};
+
 	lua.open_libraries(sol::lib::base);
-	// TESTME/FIXME: throws when failing, would like it to just return an error
-	if (!lua.safe_script_file(_conf_file).valid())
+	lua.safe_script_file(_conf_file, error_handler);
+	if (!success)
 		return false;
 
-	// Why does this not throw when incorrect, but safe_scritp_file does?
+	// Why does this not throw when erroring without a handler, but safe_script_file does?
 	if (!lua["options"]["plugins"]["M-2000C"]["THROTTLE_AB_DETENT"].valid())
 		return false;
 
