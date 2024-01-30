@@ -8,7 +8,7 @@ ModuleM2000C::ModuleM2000C(InteropString const& DCS_install_path,
 {
 	_name = DISPLAY_NAME;
 	InteropString module_path = DCS_install_path + "\\Mods\\aircraft\\" + MODULE_NAME.data();
-	_conf_file = DCS_saved_games_path + "\\Confxig\\options.lua";
+	_conf_file = DCS_saved_games_path + "\\Config\\options.lua";
 
 	_installed = fs::exists(module_path.get_mbs()) && fs::is_directory(module_path.get_mbs());
 
