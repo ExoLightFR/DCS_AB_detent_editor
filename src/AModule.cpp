@@ -1,7 +1,5 @@
 #include <functional>
 #include <cassert>
-#include <fstream>
-#include <filesystem>
 #include "lua_parsing.h"
 
 InteropString	get_saved_games_path();

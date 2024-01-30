@@ -1,7 +1,4 @@
 #include "Peripheral.hpp"
-#include "InteropString.hpp"
-#include <imgui.h>
-#include <utility>
 
 /* ============================================================================================== */
 /* ========================================== HELPERS =========================================== */
@@ -138,7 +135,7 @@ your computer correctly, and then click this button.");
 	component_peripheral_combo(periphs, &selected_periph, &selected_axis);
 	if (!selected_periph)
 		return { UINT16_MAX, false };
-	
+
 	component_axis_combo(periphs, &selected_periph, &selected_axis);
 
 	DIJOYSTATE state;

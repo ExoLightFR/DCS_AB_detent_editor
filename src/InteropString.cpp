@@ -1,6 +1,3 @@
-#include "InteropString.hpp"
-#include <Windows.h>
-
 InteropString& InteropString::operator=(std::string const& mbs)
 {
 	_mbs = mbs;

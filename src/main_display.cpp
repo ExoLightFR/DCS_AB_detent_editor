@@ -2,21 +2,10 @@
 # define UNICODE
 #endif
 
-#include <DCS_AB_detent_editor.h>
-#include "AModule.hpp"
-#include "InteropString.hpp"
-
-#include "imgui.h"
-#include <imgui_stdlib.h>
-
-#include <windows.h>
-
 #include <iostream>
-#include <array>
-#include <vector>
-#include <string_view>
-
 #include <locale>
+
+#include <DCS_AB_detent_editor.h>
 
 static float   _normalize_axis_pos(uint16_t axis_pos)
 {

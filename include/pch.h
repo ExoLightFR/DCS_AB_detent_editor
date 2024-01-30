@@ -4,6 +4,10 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include <string>
+#include <string_view>
+#include <fstream>
+#include <filesystem>
 
 #include <Windows.h>
 
@@ -14,3 +18,4 @@
 
 #include "InteropString.hpp"
 #include "AModule.hpp"
+#include "utils.ipp"

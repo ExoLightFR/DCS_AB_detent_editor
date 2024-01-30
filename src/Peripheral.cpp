@@ -5,7 +5,6 @@
 #include <dinput.h>
 
 #include "Peripheral.hpp"
-#include "InteropString.hpp"
 
 using std::map, std::string, std::function, std::vector;
 

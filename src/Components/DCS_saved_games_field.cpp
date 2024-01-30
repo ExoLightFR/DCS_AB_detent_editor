@@ -1,8 +1,3 @@
-#include <string>
-#include <string_view>
-#include <filesystem>
-#include "imgui.h"
-#include "imgui_stdlib.h"
 #include "DCS_AB_detent_editor.h"
 #include "PerformanceTimer.hpp"
 
