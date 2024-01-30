@@ -2,7 +2,21 @@
 
 using std::min, std::max;
 
+static float	calc_bar_width(std::string_view checkbox_label)
+{
+	ImVec2 text_size = ImGui::CalcTextSize(checkbox_label.data());
+	return ImGui::GetContentRegionAvail().x - text_size.x;
+}
+
+static float	calc_checkbox_pos_y(int bar_height)
+{
+	ImVec2 text_size = ImGui::CalcTextSize("");
+	assert(bar_height >= text_size.y);	// Else it's ugly
+	return ImGui::GetCursorPosY() - text_size.y - (bar_height / 2.0f);
+}
+
 // Render throttle progress bar, Set AB button, and invert checkbox
+// TODO: layout that doesn't suck ass
 void	throttle_block(float axis_value, ImVec4 AB_colour, AModule& module,
 	bool enable_buttons)
 {
@@ -15,11 +29,15 @@ void	throttle_block(float axis_value, ImVec4 AB_colour, AModule& module,
 	if (throttle_pos > detent)    // Colour bar green if in AB
 		ImGui::PushStyleColor(ImGuiCol_PlotHistogram, AB_colour);
 	TextCentered("Throttle");
-	ImGui::ProgressBar(progress_bar, { 0, 0 }, bar_text.c_str());
+	float bar_width = calc_bar_width("    Invert axis");
+	ImGui::ProgressBar(progress_bar, { bar_width, 30 }, bar_text.c_str());
+	float checkbox_y = calc_checkbox_pos_y(30);
 	if (throttle_pos > detent)    // Pop green colour from Style stack if it was pushed
 		ImGui::PopStyleColor();
 
 	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+	ImGui::SetCursorPosY(checkbox_y);
+	ImGui::Checkbox("Invert axis", &invert);
 
 	if (!enable_buttons)
 		ImGui::BeginDisabled();
@@ -30,8 +48,8 @@ void	throttle_block(float axis_value, ImVec4 AB_colour, AModule& module,
 	}
 
 	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+	ImGui::Button("Reset to default");
 
-	ImGui::Checkbox("Invert", &invert);
 	if (!enable_buttons)
 		ImGui::EndDisabled();
 }
