@@ -5,6 +5,42 @@
 
 using std::vector, std::unique_ptr;
 
+static void	imgui_selectable_style_prefix(v2::AModule const& mod)
+{
+	if (!mod.is_installed())
+		ImGui::BeginDisabled();
+	if (!mod.is_enabled() && mod.is_installed())
+		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
+}
+
+static void	imgui_selectable_style_postfix(v2::AModule const& mod)
+{
+	if (!mod.is_enabled() && mod.is_installed())
+	{
+		ImGui::PopStyleColor();
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("Error: module is installed, but detent data could not be found in files.");
+	}
+	if (!mod.is_installed())
+		ImGui::EndDisabled();
+}
+
+static bool	check_changed_DCS_paths(InteropString const& DCS_install_path,
+	InteropString const& DCS_saved_games_path)
+{
+	static std::string	prev_install_path	= DCS_install_path;
+	static std::string	prev_sg_path		= DCS_saved_games_path;
+
+	if (prev_install_path != DCS_install_path.get_mbs() || prev_sg_path != DCS_saved_games_path.get_mbs())
+	{
+		prev_install_path = DCS_install_path;
+		prev_sg_path = DCS_saved_games_path;
+		return true;
+	}
+	else
+		return false;
+}
+
 vector<unique_ptr<v2::AModule>>	get_modules_vector(InteropString const& DCS_install_path,
 	InteropString const& DCS_saved_games_path)
 {
@@ -16,34 +52,44 @@ vector<unique_ptr<v2::AModule>>	get_modules_vector(InteropString const& DCS_inst
 	return res;
 }
 
-std::unique_ptr<v2::AModule>& selected_module_combo(InteropString const& DCS_install_path,
+v2::AModule	*get_first_available_module(vector<unique_ptr<v2::AModule>> const& modules)
+{
+	for (auto &mod : modules)
+	{
+		if (mod->is_installed() && mod->is_enabled())
+			return mod.get();
+	}
+	return nullptr;
+}
+
+v2::AModule	*selected_module_combo(InteropString const& DCS_install_path,
 	InteropString const& DCS_saved_games_path)
 {
 	static vector<unique_ptr<v2::AModule>>	modules = get_modules_vector(DCS_install_path, DCS_saved_games_path);
+	static v2::AModule *selected = get_first_available_module(modules);
 
-	if (ImGui::BeginCombo("Modules", "tg"))
+	if (check_changed_DCS_paths(DCS_install_path, DCS_saved_games_path))
 	{
-		// for (auto &module : modules)
-		auto& module = modules[0];
+		modules = get_modules_vector(DCS_install_path, DCS_saved_games_path);
+		selected = get_first_available_module(modules);
+	}
+
+	std::string_view preview = selected ? selected->name().c_str() : "No compatible modules found!";
+
+	if (ImGui::BeginCombo("Modules", preview.data()))
+	{
+		for (auto &mod : modules)
 		{
-			if (!module->is_installed())
-				ImGui::BeginDisabled();
-			if (!module->is_enabled())
-				ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
+			imgui_selectable_style_prefix(*mod);
 
-			ImGui::Selectable(module->name().c_str());
+			if (ImGui::Selectable(mod->name().c_str(), selected == mod.get()) && mod->is_enabled())
+				selected = mod.get();
+			if (selected == mod.get())
+				ImGui::SetItemDefaultFocus();
 
-			if (!module->is_enabled())
-				ImGui::PopStyleColor();
-			if (!module->is_installed())
-				ImGui::EndDisabled();
+			imgui_selectable_style_postfix(*mod);
 		}
 		ImGui::EndCombo();
 	}
-	return modules[0];
-}
-
-void	testos(InteropString const& DCS_install_path, InteropString const& DCS_saved_games_path)
-{
-	(void)selected_module_combo(DCS_install_path, DCS_saved_games_path);
+	return selected;
 }

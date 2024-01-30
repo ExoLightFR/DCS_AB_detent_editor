@@ -117,7 +117,7 @@ static void component_axis_combo(std::vector<Peripheral>& periphs,
 * axies for currently selected device.
 * Returns the axis position in range [0, UINT16_MAX], and whether axis is OK or not.
 */
-std::pair<uint16_t, bool>	peripheral_block()
+std::pair<uint16_t, bool>	peripheral_and_axis_combo()
 {
 	static std::vector<Peripheral>	periphs = get_peripherals();
 	static Peripheral	*selected_periph	= periphs.size() ? &periphs[0] : nullptr;

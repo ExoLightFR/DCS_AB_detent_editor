@@ -58,18 +58,32 @@ namespace v2 {
 
 	class ModuleMirageF1 : public AModule
 	{
+		inline static constexpr std::string_view	DISPLAY_NAME = "Mirage F1 (all variants)";
+		inline static constexpr std::string_view	MODULE_NAME = "Mirage-F1";
+
+		[[nodiscard]] bool	update_detent_from_conf_file();
+	public:
+		ModuleMirageF1(InteropString const& DCS_install_path,
+			InteropString const& DCS_saved_games_path);
 		~ModuleMirageF1() = default;
 
-		float	get_detent() const override final		{ return 0; }
-		bool	set_detent(float val) override final	{ return false; }
+		[[nodiscard]] bool	set_detent(float val_0_100) override final;
+		float	get_detent() const override final		{ return _detent; }
 	};
 
 	class ModuleF15E : public AModule
 	{
+		inline static constexpr std::string_view	DISPLAY_NAME = "F-15E Strike Eagle";
+		inline static constexpr std::string_view	MODULE_NAME = "F-15E";
+
+		[[nodiscard]] bool	update_detent_from_conf_file();
+	public:
+		ModuleF15E(InteropString const& DCS_install_path,
+			InteropString const& DCS_saved_games_path);
 		~ModuleF15E() = default;
 
-		float	get_detent() const override final		{ return 0; }
-		bool	set_detent(float val) override final	{ return false; }
+		[[nodiscard]] bool	set_detent(float val_0_100) override final;
+		float	get_detent() const override final		{ return _detent; }
 	};
 
 }	// namespace v2
