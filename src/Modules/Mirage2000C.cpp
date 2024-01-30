@@ -1,9 +1,8 @@
 #include <filesystem>
 #include <fstream>
-#include "AModule2.hpp"
+#include "AModule.hpp"
 #include "lua_parsing.h"
 
-using namespace v2;
 namespace fs = std::filesystem;
 
 ModuleM2000C::ModuleM2000C(InteropString const& DCS_install_path,

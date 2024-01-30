@@ -1,6 +1,7 @@
 #include <DCS_AB_detent_editor.h>
 #include <string>
 #include <stdexcept>
+#include <shlobj_core.h>
 #include "InteropString.hpp"
 #include <windows.h>
 

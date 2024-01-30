@@ -1,9 +1,8 @@
 #include <filesystem>
 #include <fstream>
-#include "AModule2.hpp"
+#include "AModule.hpp"
 #include "lua_parsing.h"
 
-using namespace v2;
 namespace fs = std::filesystem;
 
 ModuleF15E::ModuleF15E(InteropString const& DCS_install_path,

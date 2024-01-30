@@ -3,7 +3,7 @@
 #endif
 
 #include <DCS_AB_detent_editor.h>
-#include <AModule.h>
+#include "AModule.hpp"
 #include "InteropString.hpp"
 
 #include "imgui.h"
@@ -26,7 +26,7 @@ static float   _normalize_axis_pos(uint16_t axis_pos)
 }
 
 // Render throttle progress bar, Set AB button, and invert checkbox
-static void _throttle_line(float throttle, ImVec4 AB_colour, v2::AModule& module,
+static void _throttle_line(float throttle, ImVec4 AB_colour, AModule& module,
 	bool enable_AB_button)
 {
 	using std::min, std::max;
@@ -84,7 +84,7 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window)
 	auto [DCS_install_path, install_exists]	= DCS_install_path_field();
 	auto [DCS_saved_games, sg_exists]		= DCS_Saved_Games_path_field(DCS_install_path);
 
-	v2::AModule *module = nullptr;
+	AModule *module = nullptr;
 	if (install_exists && sg_exists)
 		module = selected_module_combo(DCS_install_path, DCS_saved_games);
 

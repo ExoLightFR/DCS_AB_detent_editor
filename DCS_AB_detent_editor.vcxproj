@@ -160,10 +160,8 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\AModule.cpp" />
-    <ClCompile Include="src\AModule2.cpp" />
     <ClCompile Include="src\DCS_saved_games_field.cpp" />
     <ClCompile Include="src\gui_utils.cpp" />
-    <ClCompile Include="src\Combo_selections.cpp" />
     <ClCompile Include="src\lua_parser.cpp" />
     <ClCompile Include="src\Modules\F-15E.cpp" />
     <ClCompile Include="src\Modules\Mirage2000C.cpp" />
@@ -177,8 +175,7 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
     <ClCompile Include="src\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\AModule.h" />
-    <ClInclude Include="include\AModule2.hpp" />
+    <ClInclude Include="include\AModule.hpp" />
     <ClInclude Include="include\DCS_AB_detent_editor.h" />
     <ClInclude Include="include\InteropString.hpp" />
     <ClInclude Include="include\lua_parsing.h" />

@@ -4,8 +4,7 @@
 # define UNICODE
 #endif
 
-#include <AModule.h>
-#include "AModule2.hpp"
+#include "AModule.hpp"
 
 #include <string>
 #include <memory>
@@ -20,9 +19,9 @@
 std::pair<InteropString, bool>	DCS_Saved_Games_path_field(InteropString const& DCS_install_path);
 std::pair<InteropString, bool>	DCS_install_path_field();
 
-auto    selected_module_Combo(std::string const &DCS_path) -> std::shared_ptr<AModule>;
-v2::AModule* selected_module_combo(InteropString const& DCS_install_path,
-	InteropString const& DCS_saved_games_path);
+auto	selected_module_Combo(std::string const &DCS_path) -> std::shared_ptr<AModule>;
+AModule	*selected_module_combo(InteropString const& DCS_install_path,
+			InteropString const& DCS_saved_games_path);
 void    render_main_window(ImGuiIO &io, bool &show_demo_window);
 
 std::pair<uint16_t, bool>	peripheral_and_axis_combo();
@@ -35,5 +34,5 @@ bool    ButtonCentered(const char *label, float alignment = 0.5f);
 InteropString	get_saved_games_path();
 std::wstring    RegGetString(HKEY hKey, const std::wstring &subKey, const std::wstring &value);
 int             RegGetString(HKEY hKey, const std::wstring &subKey, const std::wstring &value,
-                    std::wstring &outstr);
+					std::wstring &outstr);
 std::string		trim_str(std::string_view str);

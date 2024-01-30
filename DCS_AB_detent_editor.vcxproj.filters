@@ -17,13 +17,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\gui_utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Combo_selections.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
@@ -71,7 +65,7 @@
     <ClCompile Include="src\lua_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AModule2.cpp">
+    <ClCompile Include="src\AModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DCS_saved_games_field.cpp">
@@ -91,9 +85,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\AModule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\DCS_AB_detent_editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -106,7 +97,7 @@
     <ClInclude Include="sol2\sol.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\AModule2.hpp">
+    <ClInclude Include="include\AModule.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\lua_parsing.h">
