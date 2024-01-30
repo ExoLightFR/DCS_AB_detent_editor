@@ -1,6 +1,4 @@
 #include <functional>
-#include <string>
-#include <map>
 #include <cassert>
 
 #define DIRECTINPUT_VERSION 0x0800

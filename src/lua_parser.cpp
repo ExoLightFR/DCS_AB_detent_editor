@@ -1,13 +1,7 @@
-#include <string>
 #include <cassert>
 #include <format>
-#include <map>
 #include <iomanip>
-#include <Windows.h>
-#include <shlobj.h>
-#define SOL_ALL_SAFETIES_ON 1
-#include "sol/sol.hpp"
-#include "InteropString.hpp"
+#include <shlobj_core.h>
 #include "lua_parsing.h"
 
 namespace std

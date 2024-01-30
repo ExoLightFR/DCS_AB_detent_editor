@@ -4,14 +4,7 @@
 # define UNICODE
 #endif
 
-#include "AModule.hpp"
-
-#include <string>
-#include <memory>
-
-#include <Windows.h>
-
-#include <imgui.h>
+#include "pch.h"
 
 #define RGB_TO_NORMED_FLOAT(x, y, z)    x / 255.0f, y / 255.0f, z / 255.0f
 #define ARRAY_LEN(x)                    sizeof(x) / sizeof(x[0])
