@@ -1,6 +1,7 @@
 #include "DCS_AB_detent_editor.h"
 
 using std::min, std::max;
+using namespace std::string_view_literals;
 
 static float	calc_bar_width(std::string_view checkbox_label)
 {
@@ -15,20 +16,21 @@ static float	calc_checkbox_pos_y(int bar_height)
 	return ImGui::GetCursorPosY() - text_size.y - (bar_height / 2.0f);
 }
 
-static void	detent_buttons(float avail_width, bool &result, std::function<bool()> a, std::function<bool()> b)
+static void	detent_buttons(float avail_width, AModule::result_t &res,
+	std::function<AModule::result_t()> a, std::function<AModule::result_t()> b)
 {
 	// float avail_width = ImGui::GetContentRegionAvail().x;
 	float padding = ImGui::GetStyle().FramePadding.x;
 	float buttons_w = (avail_width - padding) / 2;
 
-	if (ImGui::Button("Set AB detent", { buttons_w, 0 }) && !a())
-		result = false;
+	if (ImGui::Button("Set AB detent", { buttons_w, 0 }))
+		res = a();
 	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-	if (ImGui::Button("Reset to default", { buttons_w, 0 }) && !b())
-		result = false;
+	if (ImGui::Button("Reset to default", { buttons_w, 0 }))
+		res = b();
 }
 
-void    error_popup_2(std::string_view error_msg, bool &error_popup)
+static void    module_operation_error_popup(AModule::result_t &res)
 {
 	constexpr ImGuiWindowFlags    flags = ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoMove
@@ -41,9 +43,9 @@ void    error_popup_2(std::string_view error_msg, bool &error_popup)
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 	if (ImGui::BeginPopupModal("ERROR", NULL, flags))
 	{
-		ImGui::Text(error_msg.data());
+		ImGui::Text(res.error().data());
 		if (ButtonCentered("OK"))
-			error_popup = true;
+			res = AModule::result_t();
 		ImGui::EndPopup();
 	}
 	ImGui::PopStyleColor();
@@ -57,7 +59,7 @@ void	throttle_block(float axis_value, ImVec4 AB_colour, AModule& module,
 {
 	static bool		invert		= false;
 	static float	bar_width	= 0.0f;
-	static bool		success	= true;
+	static AModule::result_t res;
 
 	const float	detent = module.get_detent();
 	const float	progress_bar = invert ? (axis_value / UINT16_MAX) : (1 - axis_value / UINT16_MAX);
@@ -77,10 +79,11 @@ void	throttle_block(float axis_value, ImVec4 AB_colour, AModule& module,
 
 	if (!enable_buttons)
 		ImGui::BeginDisabled();
-	detent_buttons(bar_width, success, [&] {return module.set_detent(detent);}, [] {return false;});
+	detent_buttons(bar_width, res,
+		[&] {return module.set_detent(detent);}, [] {return tl::unexpected("yeet");});
 	if (!enable_buttons)
 		ImGui::EndDisabled();
 
-	if (!success)
-		error_popup_2("fuck you or something, point is, there was an error!", success);
+	if (!res)
+		module_operation_error_popup(res);
 }

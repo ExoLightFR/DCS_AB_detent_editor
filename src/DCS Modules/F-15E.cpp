@@ -2,6 +2,7 @@
 #include "lua_parsing.h"
 
 namespace fs = std::filesystem;
+using namespace std::string_view_literals;
 
 ModuleF15E::ModuleF15E(InteropString const& DCS_install_path,
 	InteropString const& DCS_saved_games_path)
@@ -48,14 +49,14 @@ bool	ModuleF15E::update_detent_from_conf_file()
 		return false;
 }
 
-bool	ModuleF15E::set_detent(float val_0_100)
+auto	ModuleF15E::set_detent(float val_0_100) -> result_t
 {
 	sol::state lua;
 	lua.open_libraries(sol::lib::base);
 	lua.script_file(_conf_file);
 
 	if (!lua["options"]["plugins"]["F-15ESE"]["THROTTLE_AB_DETENT"].valid())
-		return false;
+		return tl::unexpected("Cannot find THROTTLE_AB_DETENT entry in F-15E options");
 
 	sol::table eagle_lmao_axelgt = lua["options"]["plugins"]["F-15ESE"];
 	eagle_lmao_axelgt["THROTTLE_AB_DETENT"] = val_0_100;
@@ -67,11 +68,10 @@ bool	ModuleF15E::set_detent(float val_0_100)
 		<< dump_lua_table(options)
 		<< "}\n";
 
-	if (!options_lua_file.fail())	// Don't use good(), return !fail(), not the same thing lmao
-	{
-		_detent = val_0_100;
-		return true;
-	}
-	else
-		return false;
+	if (options_lua_file.fail())	// Don't use good(), return !fail(), not the same thing lmao
+#pragma warning(suppress : 4996)
+		return tl::unexpected(std::format("Failed file operation: {}", strerror(errno)));
+
+	_detent = val_0_100;
+	return result_t();
 }

@@ -2,13 +2,14 @@
 #include "lua_parsing.h"
 
 namespace fs = std::filesystem;
+using namespace std::string_view_literals;
 
 ModuleM2000C::ModuleM2000C(InteropString const& DCS_install_path,
 	InteropString const& DCS_saved_games_path)
 {
 	_name = DISPLAY_NAME;
 	InteropString module_path = DCS_install_path + "\\Mods\\aircraft\\" + MODULE_NAME.data();
-	_conf_file = DCS_saved_games_path + "\\Config\\options.lua";
+	_conf_file = DCS_saved_games_path + "\\Config\\optionsss.lua";
 
 	_installed = fs::exists(module_path.get_mbs()) && fs::is_directory(module_path.get_mbs());
 
@@ -48,14 +49,22 @@ bool	ModuleM2000C::update_detent_from_conf_file()
 		return false;
 }
 
-bool	ModuleM2000C::set_detent(float val_0_100)
+auto	ModuleM2000C::set_detent(float val_0_100) -> result_t
 {
 	sol::state lua;
+	bool		success = true;
+	// For some reason I can't find a better way to not throw on error...
+	auto error_handler = [&](lua_State*, sol::protected_function_result) {
+		success = false; return sol::protected_function_result();
+		};
+
 	lua.open_libraries(sol::lib::base);
-	lua.script_file(_conf_file);
+	lua.safe_script_file(_conf_file, error_handler);
+	if (!success)
+		return tl::unexpected(std::format("Failed to open {} in Lua contect", _conf_file.get_mbs()));
 
 	if (!lua["options"]["plugins"][MODULE_NAME.data()]["THROTTLE_AB_DETENT"].valid())
-		return false;
+		return tl::unexpected("Cannot find THROTTLE_AB_DETENT entry in M-2000C options");
 
 	sol::table m2000 = lua["options"]["plugins"][MODULE_NAME.data()];
 	m2000["THROTTLE_AB_DETENT"] = val_0_100;
@@ -67,11 +76,10 @@ bool	ModuleM2000C::set_detent(float val_0_100)
 		<< dump_lua_table(options)
 		<< "}\n";
 
-	if (!options_lua_file.fail())	// Don't use good(), return !fail(), not the same thing lmao
-	{
-		_detent = val_0_100;
-		return true;
-	}
-	else
-		return false;
+	if (options_lua_file.fail())	// Don't use good(), return !fail(), not the same thing lmao
+#pragma warning(suppress : 4996)
+		return tl::unexpected(std::format("Failed file operation: {}", strerror(errno)));
+
+	_detent = val_0_100;
+	return result_t();
 }

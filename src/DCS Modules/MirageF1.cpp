@@ -2,6 +2,7 @@
 #include "lua_parsing.h"
 
 namespace fs = std::filesystem;
+using namespace std::string_view_literals;
 
 ModuleMirageF1::ModuleMirageF1(InteropString const& DCS_install_path,
 	InteropString const& DCS_saved_games_path)
@@ -47,14 +48,14 @@ bool	ModuleMirageF1::update_detent_from_conf_file()
 		return false;
 }
 
-bool	ModuleMirageF1::set_detent(float val_0_100)
+auto	ModuleMirageF1::set_detent(float val_0_100) -> result_t
 {
 	sol::state lua;
 	lua.open_libraries(sol::lib::base);
 	lua.script_file(_conf_file);
 
 	if (!lua["options"]["plugins"][MODULE_NAME.data()]["F1SelectedABDetentPos"].valid())
-		return false;
+		return tl::unexpected("Cannot find F1SelectedABDetentPos entry in Mirage-F1 options");
 
 	sol::table mirage_f1 = lua["options"]["plugins"][MODULE_NAME.data()];
 	mirage_f1["F1SelectedABDetentPos"] = val_0_100;
@@ -66,11 +67,10 @@ bool	ModuleMirageF1::set_detent(float val_0_100)
 		<< dump_lua_table(options)
 		<< "}\n";
 
-	if (!options_lua_file.fail())	// Don't use good(), return !fail(), not the same thing lmao
-	{
-		_detent = val_0_100;
-		return true;
-	}
-	else
-		return false;
+	if (options_lua_file.fail())	// Don't use good(), return !fail(), not the same thing lmao
+#pragma warning(suppress : 4996)
+		return tl::unexpected(std::format("Failed file operation: {}", strerror(errno)));
+
+	_detent = val_0_100;
+	return result_t();
 }

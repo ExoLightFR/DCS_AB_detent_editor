@@ -10,6 +10,9 @@ protected:
 	InteropString	_conf_file;
 
 public:
+	// Rust copium is fucking REAAAAAAL
+	using result_t = tl::expected<void, std::string>;
+
 	AModule() = default;
 	virtual ~AModule() = default;
 
@@ -17,8 +20,8 @@ public:
 	[[nodiscard]] bool	is_installed() const	{ return _installed; }
 	[[nodiscard]] bool	is_enabled() const		{ return _enabled; }
 
-	virtual float	get_detent() const	{ return _detent; }
-	virtual bool	set_detent(float value) = 0;
+	virtual float		get_detent() const	{ return _detent; }
+	virtual result_t	set_detent(float value) = 0;
 
 	static std::unique_ptr<AModule>
 		get_module(std::string_view module_name,
@@ -44,7 +47,7 @@ public:
 		InteropString const& DCS_saved_games_path);
 	~ModuleM2000C() = default;
 
-	[[nodiscard]] bool	set_detent(float val_0_100) override final;
+	[[nodiscard]] result_t	set_detent(float val_0_100) override final;
 	float	get_detent() const override final		{ return _detent; }
 };
 
@@ -59,7 +62,7 @@ public:
 		InteropString const& DCS_saved_games_path);
 	~ModuleMirageF1() = default;
 
-	[[nodiscard]] bool	set_detent(float val_0_100) override final;
+	[[nodiscard]] result_t	set_detent(float val_0_100) override final;
 	float	get_detent() const override final		{ return _detent; }
 };
 
@@ -74,6 +77,6 @@ public:
 		InteropString const& DCS_saved_games_path);
 	~ModuleF15E() = default;
 
-	[[nodiscard]] bool	set_detent(float val_0_100) override final;
+	[[nodiscard]] result_t	set_detent(float val_0_100) override final;
 	float	get_detent() const override final		{ return _detent; }
 };
