@@ -22,16 +22,8 @@ ModuleMirageF1::ModuleMirageF1(InteropString const& DCS_install_path,
 */
 bool	ModuleMirageF1::update_detent_from_conf_file()
 {
-	sol::state	lua;
-	bool		success = true;
-	// For some reason I can't find a better way to not throw on error...
-	auto error_handler = [&](lua_State*, sol::protected_function_result) {
-		success = false; return sol::protected_function_result();
-		};
-
-	lua.open_libraries(sol::lib::base);
-	lua.safe_script_file(_conf_file, error_handler);
-	if (!success)
+	sol::state lua;
+	if (!safe_open_lua_context(lua))
 		return false;
 
 	if (!lua["options"]["plugins"][MODULE_NAME.data()]["F1SelectedABDetentPos"].valid())
@@ -51,8 +43,8 @@ bool	ModuleMirageF1::update_detent_from_conf_file()
 auto	ModuleMirageF1::set_detent(float val_0_100) -> result_t
 {
 	sol::state lua;
-	lua.open_libraries(sol::lib::base);
-	lua.script_file(_conf_file);
+	if (!safe_open_lua_context(lua))
+		return tl::unexpected(std::format("Failed to open {} in Lua context", _conf_file));
 
 	if (!lua["options"]["plugins"][MODULE_NAME.data()]["F1SelectedABDetentPos"].valid())
 		return tl::unexpected("Cannot find F1SelectedABDetentPos entry in Mirage-F1 options");

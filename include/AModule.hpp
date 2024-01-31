@@ -9,6 +9,8 @@ protected:
 	float			_detent = 1.01f;	// When not set, detent is > 1, so we never show AB until we know detent
 	InteropString	_conf_file;
 
+	virtual [[nodiscard]] bool	safe_open_lua_context(sol::state& lua) const;
+
 public:
 	// Rust copium is fucking REAAAAAAL
 	using result_t = tl::expected<void, std::string>;
@@ -22,6 +24,7 @@ public:
 
 	virtual float		get_detent() const	{ return _detent; }
 	virtual result_t	set_detent(float value) = 0;
+	virtual result_t	reset_detent() = 0;
 
 	static std::unique_ptr<AModule>
 		get_module(std::string_view module_name,
@@ -40,21 +43,25 @@ class ModuleM2000C : public AModule
 {
 	inline static constexpr std::string_view	DISPLAY_NAME = "Mirage 2000C";
 	inline static constexpr std::string_view	MODULE_NAME = "M-2000C";
+	inline static constexpr float	DEFAULT_DETENT = 90.0f;
 
 	[[nodiscard]] bool	update_detent_from_conf_file();
+
 public:
 	ModuleM2000C(InteropString const& DCS_install_path,
 		InteropString const& DCS_saved_games_path);
 	~ModuleM2000C() = default;
 
 	[[nodiscard]] result_t	set_detent(float val_0_100) override final;
-	float	get_detent() const override final		{ return _detent; }
+	float	get_detent() const override final			{ return _detent; }
+	virtual result_t	reset_detent() override final	{ return set_detent(DEFAULT_DETENT); }
 };
 
 class ModuleMirageF1 : public AModule
 {
 	inline static constexpr std::string_view	DISPLAY_NAME = "Mirage F1 (all variants)";
 	inline static constexpr std::string_view	MODULE_NAME = "Mirage-F1";
+	inline static constexpr float	DEFAULT_DETENT = 59.0f;
 
 	[[nodiscard]] bool	update_detent_from_conf_file();
 public:
@@ -63,13 +70,15 @@ public:
 	~ModuleMirageF1() = default;
 
 	[[nodiscard]] result_t	set_detent(float val_0_100) override final;
-	float	get_detent() const override final		{ return _detent; }
+	float	get_detent() const override final			{ return _detent; }
+	virtual result_t	reset_detent() override final	{ return set_detent(DEFAULT_DETENT); }
 };
 
 class ModuleF15E : public AModule
 {
 	inline static constexpr std::string_view	DISPLAY_NAME = "F-15E Strike Eagle";
 	inline static constexpr std::string_view	MODULE_NAME = "F-15E";
+	inline static constexpr float	DEFAULT_DETENT = 75.0f;
 
 	[[nodiscard]] bool	update_detent_from_conf_file();
 public:
@@ -78,5 +87,6 @@ public:
 	~ModuleF15E() = default;
 
 	[[nodiscard]] result_t	set_detent(float val_0_100) override final;
-	float	get_detent() const override final		{ return _detent; }
+	float	get_detent() const override final			{ return _detent; }
+	virtual result_t	reset_detent() override final	{ return set_detent(DEFAULT_DETENT); }
 };

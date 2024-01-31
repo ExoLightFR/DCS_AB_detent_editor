@@ -36,12 +36,6 @@ static void glfw_error_callback(int error, const char* description)
 	fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
-#ifdef NDEBUG
-# define SHOW_HIDE_CONSOLE SW_HIDE
-#else
-# define SHOW_HIDE_CONSOLE SW_SHOW
-#endif
-
 #define	WIN_WIDTH	700
 #define WIN_HEIGHT	400
 
@@ -50,9 +44,6 @@ void SetupImGuiStyle();
 // Main code
 int main(int, char**)
 {
-	HWND windowHandle = GetConsoleWindow();
-	ShowWindow(windowHandle, SHOW_HIDE_CONSOLE);
-
 	glfwSetErrorCallback(glfw_error_callback);
 	if (!glfwInit())
 		return 1;

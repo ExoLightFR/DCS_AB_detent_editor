@@ -42,3 +42,16 @@ public:
 
 InteropString	operator+(InteropString const& lhs, std::string const& rhs);
 InteropString	operator+(InteropString const& lhs, std::wstring const& rhs);
+
+template <>
+struct std::formatter<InteropString> : std::formatter<std::string> {
+	constexpr auto parse(std::format_parse_context& ctx)
+	{
+		return ctx.begin();
+	}
+
+	auto format(const InteropString& str, std::format_context& ctx) const
+	{
+		return std::formatter<std::string>::format(str.get_mbs(), ctx);
+	}
+};

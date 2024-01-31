@@ -75,12 +75,14 @@ void	throttle_block(float axis_value, ImVec4 AB_colour, AModule& module,
 
 	bar_width = ImGui::GetItemRectSize().x;
 	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-	ImGui::Checkbox("Invert axis", &invert);
-
 	if (!enable_buttons)
 		ImGui::BeginDisabled();
+	ImGui::Checkbox("Invert axis", &invert);
+
 	detent_buttons(bar_width, res,
-		[&] {return module.set_detent(detent);}, [] {return tl::unexpected("yeet");});
+		[&] { return module.set_detent(throttle_pos); },
+		[&] { return module.reset_detent(); }
+	);
 	if (!enable_buttons)
 		ImGui::EndDisabled();
 

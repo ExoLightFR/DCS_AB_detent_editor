@@ -27,3 +27,17 @@ AModule::get_module(std::string_view module_name, InteropString const& DCS_insta
 	else
 		return factories.at(module_name)();
 }
+
+bool	AModule::safe_open_lua_context(sol::state& lua) const
+{
+	bool success = true;
+	// For some reason I can't find a better way to not throw on error...
+	auto error_handler = [&](lua_State*, sol::protected_function_result) {
+		success = false;
+		return sol::protected_function_result();
+	};
+
+	lua.open_libraries(sol::lib::base);
+	lua.safe_script_file(_conf_file, error_handler);
+	return success;
+}

@@ -9,7 +9,7 @@ ModuleM2000C::ModuleM2000C(InteropString const& DCS_install_path,
 {
 	_name = DISPLAY_NAME;
 	InteropString module_path = DCS_install_path + "\\Mods\\aircraft\\" + MODULE_NAME.data();
-	_conf_file = DCS_saved_games_path + "\\Config\\optionsss.lua";
+	_conf_file = DCS_saved_games_path + "\\Config\\options.lua";
 
 	_installed = fs::exists(module_path.get_mbs()) && fs::is_directory(module_path.get_mbs());
 
@@ -22,16 +22,8 @@ ModuleM2000C::ModuleM2000C(InteropString const& DCS_install_path,
 */
 bool	ModuleM2000C::update_detent_from_conf_file()
 {
-	sol::state	lua;
-	bool		success = true;
-	// For some reason I can't find a better way to not throw on error...
-	auto error_handler = [&](lua_State*, sol::protected_function_result) {
-		success = false; return sol::protected_function_result();
-		};
-
-	lua.open_libraries(sol::lib::base);
-	lua.safe_script_file(_conf_file, error_handler);
-	if (!success)
+	sol::state lua;
+	if (!safe_open_lua_context(lua))
 		return false;
 
 	// Why does this not throw when erroring without a handler, but safe_script_file does?
@@ -52,16 +44,8 @@ bool	ModuleM2000C::update_detent_from_conf_file()
 auto	ModuleM2000C::set_detent(float val_0_100) -> result_t
 {
 	sol::state lua;
-	bool		success = true;
-	// For some reason I can't find a better way to not throw on error...
-	auto error_handler = [&](lua_State*, sol::protected_function_result) {
-		success = false; return sol::protected_function_result();
-		};
-
-	lua.open_libraries(sol::lib::base);
-	lua.safe_script_file(_conf_file, error_handler);
-	if (!success)
-		return tl::unexpected(std::format("Failed to open {} in Lua contect", _conf_file.get_mbs()));
+	if (!safe_open_lua_context(lua))
+		return tl::unexpected(std::format("Failed to open {} in Lua context", _conf_file));
 
 	if (!lua["options"]["plugins"][MODULE_NAME.data()]["THROTTLE_AB_DETENT"].valid())
 		return tl::unexpected("Cannot find THROTTLE_AB_DETENT entry in M-2000C options");
@@ -77,7 +61,7 @@ auto	ModuleM2000C::set_detent(float val_0_100) -> result_t
 		<< "}\n";
 
 	if (options_lua_file.fail())	// Don't use good(), return !fail(), not the same thing lmao
-#pragma warning(suppress : 4996)
+#pragma warning(suppress : 4996)	// Fuck off MSVC, strerror is FINE HERE
 		return tl::unexpected(std::format("Failed file operation: {}", strerror(errno)));
 
 	_detent = val_0_100;
