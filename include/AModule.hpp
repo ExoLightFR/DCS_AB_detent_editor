@@ -32,10 +32,11 @@ public:
 			InteropString const& DCS_saved_games_path);
 
 public:
-	inline static const std::array<std::string_view, 3>	supported_modules = {
+	inline static const std::array<std::string_view, 4>	supported_modules = {
 		"M-2000C",
 		"Mirage-F1",
 		"F-15E",
+		"F-4E"
 	};
 };
 
@@ -87,6 +88,26 @@ public:
 	~ModuleF15E() = default;
 
 	[[nodiscard]] result_t	set_detent(float val_0_100) override final;
+	float	get_detent() const override final			{ return _detent; }
+	virtual result_t	reset_detent() override final	{ return set_detent(DEFAULT_DETENT); }
+};
+
+class ModuleF4E : public AModule
+{
+	inline static constexpr std::string_view	DISPLAY_NAME = "F-4E (two more weeks)";
+	inline static constexpr std::string_view	MODULE_NAME = "F-4E";
+	inline static constexpr float	DEFAULT_DETENT = 123.45f;
+
+	// [[nodiscard]] bool	update_detent_from_conf_file();
+public:
+	ModuleF4E(InteropString const& DCS_install_path,
+		InteropString const& DCS_saved_games_path)
+	{
+		_name = DISPLAY_NAME;
+	}
+	~ModuleF4E() = default;
+
+	[[nodiscard]] result_t	set_detent(float val_0_100) override final { return tl::unexpected("what the fuck?"); }
 	float	get_detent() const override final			{ return _detent; }
 	virtual result_t	reset_detent() override final	{ return set_detent(DEFAULT_DETENT); }
 };

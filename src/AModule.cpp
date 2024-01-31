@@ -18,6 +18,7 @@ AModule::get_module(std::string_view module_name, InteropString const& DCS_insta
 		{ "M-2000C",	[&]{return unique(new ModuleM2000C(DCS_install_path, DCS_saved_games_path));}	},
 		{ "Mirage-F1",	[&]{return unique(new ModuleMirageF1(DCS_install_path, DCS_saved_games_path));}	},
 		{ "F-15E",		[&]{return unique(new ModuleF15E(DCS_install_path, DCS_saved_games_path));}		},
+		{ "F-4E",		[&]{return unique(new ModuleF4E(DCS_install_path, DCS_saved_games_path));}		},
 	};
 
 	assert(factories.size() == supported_modules.size());
