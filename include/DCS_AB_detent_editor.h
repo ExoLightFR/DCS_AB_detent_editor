@@ -9,6 +9,8 @@
 #define RGB_TO_NORMED_FLOAT(x, y, z)    x / 255.0f, y / 255.0f, z / 255.0f
 #define ARRAY_LEN(x)                    sizeof(x) / sizeof(x[0])
 
+ImGuiStyle	get_custom_imgui_style();
+
 std::pair<InteropString, bool>	DCS_Saved_Games_path_field(InteropString const& DCS_install_path);
 std::pair<InteropString, bool>	DCS_install_path_field();
 

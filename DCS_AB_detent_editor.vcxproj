@@ -230,6 +230,7 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
     <ClCompile Include="src\DCS Modules\Mirage2000C.cpp" />
     <ClCompile Include="src\DCS Modules\MirageF1.cpp" />
     <ClCompile Include="src\gui_utils.cpp" />
+    <ClCompile Include="src\imgui_style.cpp" />
     <ClCompile Include="src\lua_parser.cpp" />
     <ClCompile Include="src\InteropString.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -249,6 +250,7 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
     <ClInclude Include="include\pch.h" />
     <ClInclude Include="include\PerformanceTimer.hpp" />
     <ClInclude Include="include\Peripheral.hpp" />
+    <ClInclude Include="lib\expected\expected.hpp" />
     <ClInclude Include="sol2\sol.hpp" />
   </ItemGroup>
   <ItemGroup>

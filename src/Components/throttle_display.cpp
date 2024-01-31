@@ -15,41 +15,72 @@ static float	calc_checkbox_pos_y(int bar_height)
 	return ImGui::GetCursorPosY() - text_size.y - (bar_height / 2.0f);
 }
 
+static void	detent_buttons(float avail_width, bool &result, std::function<bool()> a, std::function<bool()> b)
+{
+	// float avail_width = ImGui::GetContentRegionAvail().x;
+	float padding = ImGui::GetStyle().FramePadding.x;
+	float buttons_w = (avail_width - padding) / 2;
+
+	if (ImGui::Button("Set AB detent", { buttons_w, 0 }) && !a())
+		result = false;
+	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+	if (ImGui::Button("Reset to default", { buttons_w, 0 }) && !b())
+		result = false;
+}
+
+void    error_popup_2(std::string_view error_msg, bool &error_popup)
+{
+	constexpr ImGuiWindowFlags    flags = ImGuiWindowFlags_NoResize
+		| ImGuiWindowFlags_NoMove
+		// | ImGuiWindowFlags_NoDecoration
+		| ImGuiWindowFlags_AlwaysAutoResize;
+
+	ImGui::PushStyleColor(ImGuiCol_TitleBgActive, IM_COL32(255, 0, 0, 255));
+	ImGui::OpenPopup("ERROR");
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	if (ImGui::BeginPopupModal("ERROR", NULL, flags))
+	{
+		ImGui::Text(error_msg.data());
+		if (ButtonCentered("OK"))
+			error_popup = true;
+		ImGui::EndPopup();
+	}
+	ImGui::PopStyleColor();
+}
+
+
 // Render throttle progress bar, Set AB button, and invert checkbox
 // TODO: layout that doesn't suck ass
 void	throttle_block(float axis_value, ImVec4 AB_colour, AModule& module,
 	bool enable_buttons)
 {
-	static bool invert = false;
+	static bool		invert		= false;
+	static float	bar_width	= 0.0f;
+	static bool		success	= true;
+
 	const float	detent = module.get_detent();
 	const float	progress_bar = invert ? (axis_value / UINT16_MAX) : (1 - axis_value / UINT16_MAX);
 	const float throttle_pos = min(max(progress_bar * 100, 0.0f), 100.0f);
 	std::string	bar_text = std::format("{:02.1f}% {:2s}", throttle_pos, throttle_pos > detent ? "AB" : "");
 
-	if (throttle_pos > detent)    // Colour bar green if in AB
+	if (throttle_pos > detent)
 		ImGui::PushStyleColor(ImGuiCol_PlotHistogram, AB_colour);
-	TextCentered("Throttle");
-	float bar_width = calc_bar_width("    Invert axis");
-	ImGui::ProgressBar(progress_bar, { bar_width, 30 }, bar_text.c_str());
-	float checkbox_y = calc_checkbox_pos_y(30);
-	if (throttle_pos > detent)    // Pop green colour from Style stack if it was pushed
+	// TextCentered("Throttle");
+	ImGui::ProgressBar(progress_bar, { 0, 0 }, bar_text.c_str());
+	if (throttle_pos > detent)
 		ImGui::PopStyleColor();
 
+	bar_width = ImGui::GetItemRectSize().x;
 	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-	ImGui::SetCursorPosY(checkbox_y);
 	ImGui::Checkbox("Invert axis", &invert);
 
 	if (!enable_buttons)
 		ImGui::BeginDisabled();
-	if (ImGui::Button("Set AB detent"))
-	{
-		module.set_detent(throttle_pos);
-		std::clog << "New detend set at " << throttle_pos << std::endl;
-	}
-
-	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-	ImGui::Button("Reset to default");
-
+	detent_buttons(bar_width, success, [&] {return module.set_detent(detent);}, [] {return false;});
 	if (!enable_buttons)
 		ImGui::EndDisabled();
+
+	if (!success)
+		error_popup_2("fuck you or something, point is, there was an error!", success);
 }

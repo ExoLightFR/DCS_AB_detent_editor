@@ -37,16 +37,21 @@ static void glfw_error_callback(int error, const char* description)
 }
 
 #ifdef NDEBUG
-# define SHOW_CONSOLE SW_HIDE
+# define SHOW_HIDE_CONSOLE SW_HIDE
 #else
-# define SHOW_CONSOLE SW_SHOW
+# define SHOW_HIDE_CONSOLE SW_SHOW
 #endif
+
+#define	WIN_WIDTH	700
+#define WIN_HEIGHT	400
+
+void SetupImGuiStyle();
 
 // Main code
 int main(int, char**)
 {
 	HWND windowHandle = GetConsoleWindow();
-	ShowWindow(windowHandle, SHOW_CONSOLE);
+	ShowWindow(windowHandle, SHOW_HIDE_CONSOLE);
 
 	glfwSetErrorCallback(glfw_error_callback);
 	if (!glfwInit())
@@ -76,7 +81,7 @@ int main(int, char**)
 #endif
 
 	// Create window with graphics context
-	GLFWwindow* window = glfwCreateWindow(600, 300, "ExoLight's DCS Afterburner Detent Editor", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIN_WIDTH, WIN_HEIGHT, "ExoLight's DCS Afterburner Detent Editor", nullptr, nullptr);
 	if (window == nullptr)
 		return 1;
 	glfwMakeContextCurrent(window);
@@ -91,8 +96,11 @@ int main(int, char**)
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
 	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsDark();
 	//ImGui::StyleColorsLight();
+	ImGui::GetStyle() = get_custom_imgui_style();
+	// SetupImGuiStyle();
+	io.Fonts->AddFontFromFileTTF("assets\\Roboto-Medium.ttf", 17);
 
 	// Setup Platform/Renderer backends
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -122,7 +130,7 @@ int main(int, char**)
 	bool show_demo_window = false;
 	bool show_another_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
+	ImGui::GetStyle().ScaleAllSizes(1.5f);
 	// Main loop
 #ifdef __EMSCRIPTEN__
 	// For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.

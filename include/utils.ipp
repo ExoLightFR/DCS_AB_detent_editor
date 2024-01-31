@@ -1,5 +1,6 @@
 #pragma once
 #include <concepts>
+#include <variant>
 
 template <typename T> requires std::is_floating_point<T>::value
 inline std::pair<T, T>	modf2(T val)

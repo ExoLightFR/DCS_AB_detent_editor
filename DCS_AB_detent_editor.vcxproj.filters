@@ -56,9 +56,6 @@
     <ClCompile Include="src\InteropString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\peripherals_display.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Peripheral.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -68,19 +65,31 @@
     <ClCompile Include="src\AModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DCS_saved_games_field.cpp">
+    <ClCompile Include="src\Components\DCS_saved_games_field.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\module_selection_combo.cpp">
+    <ClCompile Include="src\Components\module_selection_combo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Modules\Mirage2000C.cpp">
+    <ClCompile Include="src\Components\peripherals_display.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Modules\MirageF1.cpp">
+    <ClCompile Include="src\Components\throttle_display.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Modules\F-15E.cpp">
+    <ClCompile Include="src\DCS Modules\F-15E.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DCS Modules\Mirage2000C.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DCS Modules\MirageF1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui_style.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,6 +113,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\PerformanceTimer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\expected\expected.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
