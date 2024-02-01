@@ -124,6 +124,9 @@
     <ClInclude Include="lib\expected\expected.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -131,5 +134,11 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\lua\lua54.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DCS_AB_detent_editor.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\turbofan-blade-icon.ico" />
   </ItemGroup>
 </Project>

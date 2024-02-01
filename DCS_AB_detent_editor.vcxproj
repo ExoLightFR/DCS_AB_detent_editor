@@ -253,6 +253,7 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
     <ClInclude Include="include\PerformanceTimer.hpp" />
     <ClInclude Include="include\Peripheral.hpp" />
     <ClInclude Include="lib\expected\expected.hpp" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="sol2\sol.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -261,6 +262,12 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\lua\lua54.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DCS_AB_detent_editor.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\turbofan-blade-icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
