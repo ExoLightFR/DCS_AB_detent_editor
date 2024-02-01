@@ -39,8 +39,6 @@ static void glfw_error_callback(int error, const char* description)
 #define	WIN_WIDTH	700
 #define WIN_HEIGHT	400
 
-void SetupImGuiStyle();
-
 // Main code
 int main(int, char**)
 {
@@ -90,8 +88,7 @@ int main(int, char**)
 	//ImGui::StyleColorsDark();
 	//ImGui::StyleColorsLight();
 	ImGui::GetStyle() = get_custom_imgui_style();
-	// SetupImGuiStyle();
-	io.Fonts->AddFontFromFileTTF("assets\\Roboto-Medium.ttf", 17);
+	io.Fonts->AddFontFromMemoryCompressedBase85TTF(Roboto_Medium_compressed_data_base85, 17);
 
 	// Setup Platform/Renderer backends
 	ImGui_ImplGlfw_InitForOpenGL(window, true);

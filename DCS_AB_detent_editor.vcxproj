@@ -230,6 +230,7 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
     <ClCompile Include="src\DCS Modules\F-15E.cpp" />
     <ClCompile Include="src\DCS Modules\Mirage2000C.cpp" />
     <ClCompile Include="src\DCS Modules\MirageF1.cpp" />
+    <ClCompile Include="src\embed_roboto_medium.cpp" />
     <ClCompile Include="src\gui_utils.cpp" />
     <ClCompile Include="src\imgui_style.cpp" />
     <ClCompile Include="src\lua_parser.cpp" />

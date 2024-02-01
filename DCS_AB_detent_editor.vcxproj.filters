@@ -92,6 +92,9 @@
     <ClCompile Include="src\imgui_style.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\embed_roboto_medium.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DCS_AB_detent_editor.h">
