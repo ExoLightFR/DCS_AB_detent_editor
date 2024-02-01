@@ -10,17 +10,14 @@
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
     <Filter Include="imgui">
-      <UniqueIdentifier>{fd06d8a8-9038-4d72-a8d6-c0a0af8edd49}</UniqueIdentifier>
+      <UniqueIdentifier>{918dbb94-1a6a-4800-aafa-c7053f8f0864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{98e31546-5fc8-4dfa-8f25-5df527a12eb6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\gui_utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Combo_selections.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
@@ -41,10 +38,10 @@
     <ClCompile Include="imgui\imgui_draw.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_sdl.cpp">
+    <ClCompile Include="imgui\imgui_impl_glfw.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_sdlrenderer.cpp">
+    <ClCompile Include="imgui\imgui_impl_opengl3.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_stdlib.cpp">
@@ -56,25 +53,92 @@
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="src\InteropString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Peripheral.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lua_parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\DCS_saved_games_field.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\module_selection_combo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\peripherals_display.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\throttle_display.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DCS Modules\F-15E.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DCS Modules\Mirage2000C.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DCS Modules\MirageF1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui_style.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\embed_roboto_medium.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\AModule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\DCS_AB_detent_editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="imgui\include\imgui_impl_sdl.h">
-      <Filter>imgui</Filter>
+    <ClInclude Include="include\InteropString.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="imgui\include\imgui_impl_sdlrenderer.h">
-      <Filter>imgui</Filter>
+    <ClInclude Include="include\Peripheral.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="imgui\include\imgui_internal.h">
-      <Filter>imgui</Filter>
+    <ClInclude Include="sol2\sol.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="imgui\include\imgui_stdlib.h">
-      <Filter>imgui</Filter>
+    <ClInclude Include="include\AModule.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\lua_parsing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PerformanceTimer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\expected\expected.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
+    <None Include="include\utils.ipp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\lua\lua54.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DCS_AB_detent_editor.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\turbofan-blade-icon.ico" />
   </ItemGroup>
 </Project>
