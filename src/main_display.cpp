@@ -33,10 +33,6 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window)
 	if (module)
 		throttle_block(axis_value, AB_colour, *module, module->is_enabled() && valid_axis_value);
 
-	ImGui::Separator();
-
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
 #ifdef _DEBUG
 	ImGui::Separator();
 

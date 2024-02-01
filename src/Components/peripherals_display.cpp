@@ -69,7 +69,7 @@ static void component_peripheral_combo(std::vector<Peripheral> &periphs,
 	Axis		*selected_axis = *p_selected_axis;
 
 	std::string_view preview = (selected_periph ? selected_periph->name.c_str() : "No device found");
-	if (ImGui::BeginCombo("Devices", preview.data()))
+	if (ImGui::BeginCombo("Device", preview.data()))
 	{
 		for (auto& periph : periphs)
 		{
@@ -94,7 +94,7 @@ static void component_axis_combo(std::vector<Peripheral>& periphs,
 	Axis* selected_axis = *p_selected_axis;
 
 	std::string preview = selected_axis ? selected_axis->name.c_str() : "No axies found";
-	if (ImGui::BeginCombo("Axies", preview.data()))
+	if (ImGui::BeginCombo("Axis", preview.data()))
 	{
 		for (auto& axis : selected_periph->axies)
 		{

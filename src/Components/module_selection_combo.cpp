@@ -73,7 +73,7 @@ AModule	*selected_module_combo(InteropString const& DCS_install_path,
 
 	std::string_view preview = selected ? selected->name().c_str() : "No compatible modules found!";
 
-	if (ImGui::BeginCombo("Modules", preview.data()))
+	if (ImGui::BeginCombo("Module", preview.data()))
 	{
 		for (auto &mod : modules)
 		{

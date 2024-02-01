@@ -37,7 +37,7 @@ static void glfw_error_callback(int error, const char* description)
 }
 
 #define	WIN_WIDTH	700
-#define WIN_HEIGHT	400
+#define WIN_HEIGHT	340
 
 // Main code
 int main(int, char**)
@@ -65,6 +65,7 @@ int main(int, char**)
 	const char* glsl_version = "#version 130";
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
