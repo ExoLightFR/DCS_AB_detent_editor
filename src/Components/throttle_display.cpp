@@ -1,6 +1,6 @@
 #include "DCS_AB_detent_editor.h"
 
-using std::min, std::max;
+using std::clamp;
 using namespace std::string_view_literals;
 
 static float	calc_bar_width(std::string_view checkbox_label)
@@ -63,7 +63,7 @@ void	throttle_block(float axis_value, ImVec4 AB_colour, AModule& module,
 
 	const float	detent = module.get_detent();
 	const float	progress_bar = invert ? (axis_value / UINT16_MAX) : (1 - axis_value / UINT16_MAX);
-	const float throttle_pos = min(max(progress_bar * 100, 0.0f), 100.0f);
+	const float throttle_pos = clamp(progress_bar * 100, 0.0f, 100.0f);
 	std::string	bar_text = std::format("{:02.1f}% {:2s}", throttle_pos, throttle_pos > detent ? "AB" : "");
 
 	if (throttle_pos > detent)
