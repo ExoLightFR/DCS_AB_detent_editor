@@ -1,4 +1,5 @@
 #include "DCS_AB_detent_editor.h"
+#include <algorithm>
 
 using std::vector, std::unique_ptr;
 
@@ -41,12 +42,21 @@ static bool	check_changed_DCS_paths(InteropString const& DCS_install_path,
 vector<unique_ptr<AModule>>	get_modules_vector(InteropString const& DCS_install_path,
 	InteropString const& DCS_saved_games_path)
 {
-	vector<unique_ptr<AModule>>	res;
+	vector<unique_ptr<AModule>>	modules;
 
+	auto cmp = [](unique_ptr<AModule> const& a, unique_ptr<AModule> const& b) {
+		return a->name() < b->name();
+	};
 	for (auto& i : AModule::supported_modules)
-		res.push_back(AModule::get_module(i, DCS_install_path, DCS_saved_games_path));
+	{
+		auto module_ptr = AModule::get_module(i, DCS_install_path, DCS_saved_games_path);
+		modules.insert(
+			std::upper_bound(modules.begin(), modules.end(), module_ptr, cmp),
+			std::move(module_ptr)
+		);
+	}
 
-	return res;
+	return modules;
 }
 
 AModule	*get_first_available_module(vector<unique_ptr<AModule>> const& modules)
