@@ -44,7 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableASAN>false</EnableASAN>
+    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -227,6 +227,8 @@ move /y  $(SolutionDir)$(TargetName).zip  $(SolutionDir)bin\$(TargetName).zip</C
     <ClCompile Include="src\Components\module_selection_combo.cpp" />
     <ClCompile Include="src\Components\peripherals_display.cpp" />
     <ClCompile Include="src\Components\throttle_display.cpp" />
+    <ClCompile Include="src\custom_curves.cpp" />
+    <ClCompile Include="src\DCS Modules\F-15C.cpp" />
     <ClCompile Include="src\DCS Modules\F-15E.cpp" />
     <ClCompile Include="src\DCS Modules\Mirage2000C.cpp" />
     <ClCompile Include="src\DCS Modules\MirageF1.cpp" />

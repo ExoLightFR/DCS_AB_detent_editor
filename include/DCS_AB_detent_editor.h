@@ -6,6 +6,9 @@
 
 #include "pch.h"
 
+typedef float	axis_100;
+typedef float	axis_1;
+
 #define RGB_TO_NORMED_FLOAT(x, y, z)    x / 255.0f, y / 255.0f, z / 255.0f
 #define ARRAY_LEN(x)                    sizeof(x) / sizeof(x[0])
 
@@ -21,6 +24,8 @@ void	throttle_block(float throttle, ImVec4 AB_colour, AModule& module,
 AModule	*selected_module_combo(InteropString const& DCS_install_path,
 			InteropString const& DCS_saved_games_path);
 void    render_main_window(ImGuiIO &io, bool &show_demo_window);
+
+std::array<float, 11>	get_custom_curves(float module_detent, axis_100 throttle, bool invert);
 
 std::pair<uint16_t, bool>	peripheral_and_axis_combo();
 

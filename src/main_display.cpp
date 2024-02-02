@@ -29,7 +29,7 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window)
 
 	ImGui::Separator();
 
-	auto [axis_value, valid_axis_value] = peripheral_and_axis_combo();;
+	auto [axis_value, valid_axis_value] = peripheral_and_axis_combo();
 	if (module)
 		throttle_block(axis_value, AB_colour, *module, module->is_enabled() && valid_axis_value);
 
