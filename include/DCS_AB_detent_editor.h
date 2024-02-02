@@ -24,7 +24,6 @@ void    render_main_window(ImGuiIO &io, bool &show_demo_window);
 
 std::pair<uint16_t, bool>	peripheral_and_axis_combo();
 
-void    error_popup(std::string const &error_msg, bool *error_popup);
 void    TextCentered(const char *text);
 bool    ButtonCentered(const char *label, float alignment = 0.5f);
 
